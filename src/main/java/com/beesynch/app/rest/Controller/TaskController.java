@@ -34,27 +34,28 @@ import java.util.List;
             }
             // Validate required schedule fields (if schedule is provided)
             System.out.println("Incoming payload: " + request);
-            System.out.println("Received Schedule: " + request.getSchedule());
+            System.out.println("Received Schedule: " + request.getSchedules());
             if (request.getAssignments() != null) {
                 for (TaskAssignmentDTO assignment : request.getAssignments()) {
                     System.out.println("Assignment: " + assignment);
                 }
             }
-            if (request.getSchedule() != null) {
-                ScheduleDTO schedule = request.getSchedule();
-                System.out.println("Due Time: " + schedule.getDueTime());
+            if (request.getSchedules() != null) {
+                for(ScheduleDTO schedule : request.getSchedules() ){
+                    System.out.println("Due Time: " + schedule.getDueTime());
 
-                // Normal Validation
-                if (request.getSchedule() != null && request.getSchedule().getDueTime() == null) {
-                    return ResponseEntity.badRequest().body("Error: due_time must not be null in the schedule.");
-                }
+                    // Normal Validation
+                    if (request.getSchedules() == null || request.getSchedules().isEmpty()) {
+                        return ResponseEntity.badRequest().body("Error: schedules must not be empty.");
+                    }
 
-                if (schedule.getDueTime() == null) {
-                    return ResponseEntity.badRequest().body("Error: due_time must not be null in the schedule.");
-                }
+                    if (schedule.getDueTime() == null) {
+                        return ResponseEntity.badRequest().body("Error: due_time must not be null in the schedule.");
+                    }
 
-                if (schedule.getStartDate() == null ) { // removed: || schedule.getEndDate() == null
-                    return ResponseEntity.badRequest().body("Error: startDate is required in schedule.");
+                    if (schedule.getStartDate() == null ) { // removed: || schedule.getEndDate() == null
+                        return ResponseEntity.badRequest().body("Error: startDate is required in schedule.");
+                    }
                 }
             }
 

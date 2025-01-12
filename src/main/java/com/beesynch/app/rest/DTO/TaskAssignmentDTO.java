@@ -1,9 +1,11 @@
 package com.beesynch.app.rest.DTO;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Date;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskAssignmentDTO {
     @JsonProperty("user_id")
     private Long user_id; // ID of the user to assign the task to

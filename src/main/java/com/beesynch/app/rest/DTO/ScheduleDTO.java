@@ -2,8 +2,11 @@ package com.beesynch.app.rest.DTO;
 
 import java.sql.Date;
 import java.sql.Time;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScheduleDTO {
     private Long user_id;
     private Date start_date;

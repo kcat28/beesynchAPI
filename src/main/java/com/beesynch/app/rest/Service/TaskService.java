@@ -42,35 +42,40 @@ public class TaskService {
             task.setDescription(taskCreationRequest.getDescription()); // i think this allows for null
             task.setCategory(taskCreationRequest.getCategory());
             task.setTask_status(taskCreationRequest.getTask_status());
+            task.setRewardpts(taskCreationRequest.getRewardpts());
             Task savedTask = taskRepo.save(task);
             if (savedTask.getId() == null) {
                 throw new RuntimeException("Error: Task was not properly saved or its ID is null.");
             }
 
             // Step 2: Create and save the Schedule, if provided
-            if (taskCreationRequest.getSchedule() != null) {
-                ScheduleDTO scheduleDTO = taskCreationRequest.getSchedule();
-                Schedule schedule = new Schedule();
-                schedule.setTask(savedTask);
-                if (savedTask.getId() == null) {
-                    throw new RuntimeException("Error: Task was not properly saved or its ID is null.");
-                }
-                schedule.setStart_date(scheduleDTO.getStartDate());
-                schedule.setEnd_date(scheduleDTO.getEndDate());
-                schedule.setRecurrence(scheduleDTO.getRecurrence());
-                schedule.setDue_time(scheduleDTO.getDueTime());
+            if (taskCreationRequest.getSchedules() != null && !taskCreationRequest.getSchedules().isEmpty()) {
 
-                // Fetch the User and assign to Schedule
-                User user = null;
+                for(ScheduleDTO scheduleDTO : taskCreationRequest.getSchedules()){
+                    Schedule schedule = new Schedule();
+                    schedule.setTask(savedTask);
 
-                // Check if user_id is not null
-                if(scheduleDTO.getUser_id() != null){
-                    user = userRepo.findById(scheduleDTO.getUser_id())
-                            .orElseThrow(() -> new RuntimeException("User not found with ID: " + scheduleDTO.getUser_id()));
+                    if (savedTask.getId() == null) {
+                        throw new RuntimeException("Error: Task was not properly saved or its ID is null.");
+                    }
+                    schedule.setStart_date(scheduleDTO.getStartDate());
+                    schedule.setEnd_date(scheduleDTO.getEndDate());
+                    schedule.setRecurrence(scheduleDTO.getRecurrence());
+                    schedule.setDue_time(scheduleDTO.getDueTime());
+
+                    // Fetch the User and assign to Schedule
+                    User user = null;
+
+                    // Check if user_id is not null
+                    if(scheduleDTO.getUser_id() != null){
+                        user = userRepo.findById(scheduleDTO.getUser_id())
+                                .orElseThrow(() -> new RuntimeException("User not found with ID: " + scheduleDTO.getUser_id()));
+                    }
+                    // Allow user to remain null if user_id is null
+                    schedule.setUser_id(user);
+                    scheduleRepo.save(schedule);
+
                 }
-                // Allow user to remain null if user_id is null
-                schedule.setUser_id(user);
-                scheduleRepo.save(schedule);
             }
 
             // Step 3: Create and save Task Assignments, if provided

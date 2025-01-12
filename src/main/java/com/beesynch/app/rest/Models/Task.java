@@ -28,11 +28,18 @@ public class Task {
     @Column(nullable = false)
     private String task_status;
 
+    @Column(name = "rewardpts")
+    private Integer rewardpts;
+
     private Date completion_date;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<TaskAssignment> assignments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Schedule> schedule = new ArrayList<>();
 
     // Getters Method
     public Long getId() {
@@ -50,12 +57,19 @@ public class Task {
     public String getTask_status(){
         return task_status;
     }
+    public Integer getRewardpts(){
+        return rewardpts;
+    }
     public Date getCompletion_date(){
         return completion_date;
     }
     public List<TaskAssignment> getAssignments(){
         return assignments;
     }
+    public List<Schedule> getSchedule(){
+        return schedule;
+    }
+
 
     // Setters Method
     public void setId(Long id) {
@@ -73,12 +87,20 @@ public class Task {
     public void setTask_status(String task_status) {
         this.task_status = task_status;
     }
+    public void setRewardpts(Integer rewardpts){
+        this.rewardpts = rewardpts;
+    }
     public void setCompletion_date(Date completion_date) {
         this.completion_date = completion_date;
     }
     public void setAssignments(List<TaskAssignment> assignments) {
         this.assignments = assignments;
     }
+
+    public void setSchedules(List<Schedule> schedules){
+        this.schedule = schedules;
+    }
+
 
 }
 

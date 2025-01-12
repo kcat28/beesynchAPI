@@ -28,7 +28,6 @@ public class Schedule {
 
     @Column()
     private Date end_date;
-
     private String recurrence; // subject for study
     private Time due_time;
 

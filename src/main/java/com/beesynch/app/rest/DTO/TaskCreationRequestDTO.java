@@ -5,7 +5,8 @@ public class TaskCreationRequestDTO {
     private String description;
     private String category;
     private String task_status;
-    private ScheduleDTO schedule; // Optional schedule details
+    private Integer rewardpts;
+    private List<ScheduleDTO> schedules; // Optional schedule details
     private List<TaskAssignmentDTO> assignments; // Optional assignments
 
     // Getters and setters
@@ -28,11 +29,11 @@ public class TaskCreationRequestDTO {
     public void setTask_status(String task_status) {
         this.task_status = task_status;
     }
-    public ScheduleDTO getSchedule() {
-        return schedule;
+    public List<ScheduleDTO> getSchedules() {
+        return schedules;
     }
-    public void setSchedule(ScheduleDTO schedule) {
-        this.schedule = schedule;
+    public void setSchedules(List<ScheduleDTO> schedule) {
+        this.schedules = schedule;
     }
     public List<TaskAssignmentDTO> getAssignments() {
         return assignments;
@@ -45,5 +46,8 @@ public class TaskCreationRequestDTO {
     }
     public void setCategory(String category) {
         this.category = category;
+    }
+    public Integer getRewardpts(){
+        return rewardpts;
     }
 }
