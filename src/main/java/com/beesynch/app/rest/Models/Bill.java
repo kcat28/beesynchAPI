@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Bill {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bill_id;
     @ManyToOne
     @JoinColumn(name = "hive_id", nullable = false)
@@ -15,7 +15,7 @@ public class Bill {
     @Column(length = 100)
     String bill_name;
     @Column(nullable = false)
-    Double bill_amount;
+    Double amount;
     @Column(nullable = false)
     String bill_status;
 
@@ -30,7 +30,7 @@ public class Bill {
         return bill_name;
     }
     public Double getBill_amount(){
-        return bill_amount;
+        return amount;
     }
     public String getBill_status(){
         return bill_status;
@@ -40,11 +40,12 @@ public class Bill {
     public void setBill_id(Long id) {
         this.bill_id = id;
     }
+    public void setHive_id(Hive id){this.hive_id = id;}
     public void setBill_name(String bill_name) {
         this.bill_name = bill_name;
     }
     public void setBill_amount(Double bill_amount) {
-        this.bill_amount = bill_amount;
+        this.amount = bill_amount;
     }
     public void setBill_status(String bill_status) {
         this.bill_status = bill_status;

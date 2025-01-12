@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScheduleDTO {
+
+    private Long bill_id;
     private Long user_id;
     private Date start_date;
     private Date end_date;
@@ -17,6 +19,8 @@ public class ScheduleDTO {
     private Time due_time;
 
     // Getters and setters
+    public Long getBill_id(){return bill_id;}
+    public void setBill_id(Long bill_id){this.bill_id = bill_id;}
     public Long getUser_id() {
         return user_id;
     }
