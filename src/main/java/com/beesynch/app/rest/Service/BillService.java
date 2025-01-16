@@ -40,6 +40,7 @@ public class BillService {
             bill.setHive_id(hive);  // Set the full Hive object instead of just the hive_id
             bill.setBill_name(billCreationRequest.getBill_name());
             bill.setBill_amount(billCreationRequest.getAmount());
+            bill.setDescription(billCreationRequest.getDescription());
             bill.setBill_status(billCreationRequest.getBill_status());
 
             // save the bill to the repository(sql)
@@ -53,6 +54,8 @@ public class BillService {
                 for (ScheduleDTO scheduleDTO : billCreationRequest.getSchedules()) {
                     Schedule schedule = new Schedule();
                     schedule.setBill_id(savedBill);  // Set the saved Bill to the Schedule
+
+                    System.out.println("Creating Schedule: " + schedule);
 
                     schedule.setStart_date(scheduleDTO.getStartDate());
                     schedule.setEnd_date(scheduleDTO.getEndDate());

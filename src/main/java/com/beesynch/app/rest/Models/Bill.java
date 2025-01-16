@@ -9,13 +9,20 @@ public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bill_id;
+
     @ManyToOne
     @JoinColumn(name = "hive_id", nullable = false)
     private Hive hive_id;
+
     @Column(length = 100)
     String bill_name;
+
     @Column(nullable = false)
     Double amount;
+
+   @Column(length = 200)
+    private String description;
+
     @Column(nullable = false)
     String bill_status;
 
@@ -32,6 +39,8 @@ public class Bill {
     public Double getBill_amount(){
         return amount;
     }
+    public String getDescription(){return description;
+    }
     public String getBill_status(){
         return bill_status;
     }
@@ -46,6 +55,9 @@ public class Bill {
     }
     public void setBill_amount(Double bill_amount) {
         this.amount = bill_amount;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
     public void setBill_status(String bill_status) {
         this.bill_status = bill_status;

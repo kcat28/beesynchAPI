@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Dec 28, 2024 at 10:31 AM
+-- Host: 127.0.0.1
+-- Generation Time: Jan 16, 2025 at 06:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,8 +32,20 @@ CREATE TABLE `bills` (
   `hive_id` int(11) NOT NULL,
   `bill_name` varchar(100) NOT NULL,
   `amount` double NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
   `bill_status` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `bills`
+--
+
+INSERT INTO `bills` (`bill_id`, `hive_id`, `bill_name`, `amount`, `description`, `bill_status`) VALUES
+(5, 1, 'First Test Bill', 100, NULL, 'Ongoing'),
+(6, 1, 'First Test Bill', 100, NULL, 'Ongoing'),
+(7, 1, 'First Test Bill', 100, NULL, 'Ongoing'),
+(8, 1, 'First Test Bill', 100, NULL, 'Ongoing'),
+(9, 1, 'First Test Bill', 100, NULL, 'Ongoing');
 
 -- --------------------------------------------------------
 
@@ -47,6 +59,13 @@ CREATE TABLE `hive` (
   `hive_created_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `hive`
+--
+
+INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`) VALUES
+(1, 'test hive', '2025-01-11');
+
 -- --------------------------------------------------------
 
 --
@@ -58,9 +77,16 @@ CREATE TABLE `household_members` (
   `hive_id` int(11) NOT NULL,
   `ranking_id` int(11) NOT NULL,
   `role` varchar(200) NOT NULL,
-  `points` int(11) NOT NULL,
+  `points` int(11) DEFAULT NULL,
   `achievements` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `household_members`
+--
+
+INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`) VALUES
+(1, 1, 1, 'Member', 0, 'null');
 
 -- --------------------------------------------------------
 
@@ -86,10 +112,18 @@ CREATE TABLE `ranking` (
   `ranking_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `hive_id` int(11) NOT NULL,
-  `rank_position` int(11) NOT NULL,
-  `period_start` date NOT NULL,
-  `period_end` date NOT NULL
+  `rank_position` int(11) DEFAULT NULL,
+  `period_start` date DEFAULT NULL,
+  `period_end` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ranking`
+--
+
+INSERT INTO `ranking` (`ranking_id`, `user_id`, `hive_id`, `rank_position`, `period_start`, `period_end`) VALUES
+(1, 1, 1, 0, NULL, NULL),
+(2, 2, 1, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -101,9 +135,9 @@ CREATE TABLE `schedule` (
   `schedule_id` int(11) NOT NULL,
   `task_id` int(11) DEFAULT NULL,
   `bill_id` int(11) DEFAULT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
   `recurrence` varchar(50) DEFAULT NULL,
   `due_time` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -114,7 +148,23 @@ CREATE TABLE `schedule` (
 
 INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_date`, `end_date`, `recurrence`, `due_time`) VALUES
 (9, 15, NULL, 1, '2024-01-01', '2024-01-07', 'Weekly', '06:00:00'),
-(13, 19, NULL, 2, '2024-01-01', '2024-01-07', 'Weekly', '06:00:00');
+(13, 19, NULL, 2, '2024-01-01', '2024-01-07', 'Weekly', '06:00:00'),
+(63, NULL, 5, NULL, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(64, NULL, 5, NULL, '2023-12-01', '2023-12-31', 'Weekly', '07:00:00'),
+(65, NULL, 7, NULL, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(66, NULL, 7, NULL, '2023-12-01', '2023-12-31', 'Weekly', '07:00:00'),
+(67, NULL, 8, NULL, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(68, NULL, 8, NULL, '2023-12-01', '2023-12-31', 'Weekly', '07:00:00'),
+(77, 81, NULL, 1, '2025-01-15', '2025-01-15', 'Weekly', '05:59:54'),
+(78, 81, NULL, 2, '2025-01-15', '2025-01-15', 'Weekly', '05:59:54'),
+(79, 82, NULL, 1, '2025-01-15', NULL, 'Daily', '05:59:54'),
+(80, 82, NULL, 2, '2025-01-15', NULL, 'Daily', '05:59:54'),
+(81, 83, NULL, 1, '2025-01-15', '2025-01-15', 'Daily', '06:18:43'),
+(82, 83, NULL, 2, '2025-01-15', '2025-01-15', 'Daily', '06:18:43'),
+(85, 85, NULL, 1, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(86, 85, NULL, 2, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(87, NULL, 9, NULL, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(88, NULL, 9, NULL, '2023-12-01', '2023-12-31', 'Weekly', '07:00:00');
 
 -- --------------------------------------------------------
 
@@ -128,6 +178,7 @@ CREATE TABLE `task` (
   `description` text DEFAULT NULL,
   `category` varchar(100) DEFAULT NULL,
   `task_status` varchar(100) NOT NULL,
+  `rewardpts` int(11) DEFAULT NULL,
   `completion_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -135,9 +186,13 @@ CREATE TABLE `task` (
 -- Dumping data for table `task`
 --
 
-INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `completion_date`) VALUES
-(15, 'Clean the house', 'Ensure all rooms are cleaned', 'Chores', 'In Progress', NULL),
-(19, 'Clean the house', 'Ensure all rooms are cleaned', 'Chores', 'In Progress', NULL);
+INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`) VALUES
+(15, 'Clean the house', 'Ensure all rooms are cleaned', 'Chores', 'In Progress', NULL, NULL),
+(19, 'Clean the house', 'Ensure all rooms are cleaned', 'Chores', 'In Progress', NULL, NULL),
+(81, 'This is a test task', 'Assign 2 schedules and assignment', 'Task', 'Ongoing', NULL, NULL),
+(82, 'This is a null test', 'Assign null', 'Chore', 'Ongoing', NULL, NULL),
+(83, 'Saved', NULL, 'Task', 'Ongoing', 60, NULL),
+(85, 'This is a test Task 4', 'This is a sample task description.', 'General', 'Ongoing', 30, NULL);
 
 -- --------------------------------------------------------
 
@@ -159,7 +214,15 @@ CREATE TABLE `task_assignment` (
 INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALUES
 (3, 15, 1, '2024-01-05'),
 (4, 15, 2, '2024-01-06'),
-(5, 19, 2, '2024-01-05');
+(5, 19, 2, '2024-01-05'),
+(89, 81, 1, '2025-01-15'),
+(90, 81, 2, '2025-01-15'),
+(91, 82, 1, '2025-01-15'),
+(92, 82, 2, '2025-01-15'),
+(93, 83, 1, '2025-01-15'),
+(94, 83, 2, '2025-01-15'),
+(97, 85, 1, '2023-12-01'),
+(98, 85, 2, '2023-12-02');
 
 -- --------------------------------------------------------
 
@@ -262,13 +325,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bills`
 --
 ALTER TABLE `bills`
-  MODIFY `bill_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `bill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `hive`
 --
 ALTER TABLE `hive`
-  MODIFY `hive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `hive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `notification`
@@ -280,25 +343,25 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `ranking`
 --
 ALTER TABLE `ranking`
-  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT for table `task_assignment`
 --
 ALTER TABLE `task_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `users`

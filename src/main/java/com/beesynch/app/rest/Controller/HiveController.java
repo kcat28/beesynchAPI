@@ -20,23 +20,23 @@ public class HiveController {
         return hiveRepo.findAll();
     }
 
-    @PostMapping//done
-    public ResponseEntity<String> createHive(@RequestParam String name) {
+    @PostMapping("/createHive")
+    public ResponseEntity<String> createHive(@RequestBody Hive hive) {
         // Check if hive name exists
-        if (hiveRepo.existsByHiveName(name)) {
+        if (hiveRepo.existsByHiveName(hive.getHiveName())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Hive with name: " + name + " already exists.");
+                    .body("Hive with name: " + hive.getHiveName() + " already exists.");
         }
 
         // save new hive instance
-        Hive hive = new Hive();
-        hive.setHiveName(name);
+//        Hive hive = new Hive();
+//        hive.setHiveName(hive_name);
         hive.setHive_created_date(new java.sql.Date(System.currentTimeMillis()));
 
         hiveRepo.save(hive);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Hive created with name: " + name + " and creation date: " + hive.getHive_created_date());
+                .body("Hive created with name: " + hive.getHiveName() + " and creation date: " + hive.getHive_created_date());
     }
 
     @DeleteMapping()//done

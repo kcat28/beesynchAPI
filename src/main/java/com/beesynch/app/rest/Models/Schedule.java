@@ -1,4 +1,5 @@
 package com.beesynch.app.rest.Models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -13,6 +14,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
+    @JsonBackReference
     private Task task;
 
     @ManyToOne
