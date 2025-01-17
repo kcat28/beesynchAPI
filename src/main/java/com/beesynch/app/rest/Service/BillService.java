@@ -3,12 +3,10 @@ package com.beesynch.app.rest.Service;
 
 import com.beesynch.app.rest.DTO.BillDTO;
 import com.beesynch.app.rest.DTO.ScheduleDTO;
-import com.beesynch.app.rest.Models.Bill;
-import com.beesynch.app.rest.Models.Hive;
-import com.beesynch.app.rest.Models.Schedule;
-import com.beesynch.app.rest.Models.User;
+import com.beesynch.app.rest.Models.*;
 import com.beesynch.app.rest.Repo.BillRepo;
 import com.beesynch.app.rest.Repo.HiveRepo;
+import com.beesynch.app.rest.Repo.NotificationRepo;
 import com.beesynch.app.rest.Repo.ScheduleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +24,9 @@ public class BillService {
 
     @Autowired
     private HiveRepo hiveRepo;
+
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     public Bill createFullTask(BillDTO billCreationRequest) {
 
@@ -62,6 +63,12 @@ public class BillService {
                     schedule.setRecurrence(scheduleDTO.getRecurrence());
                     schedule.setDue_time(scheduleDTO.getDueTime());
                     scheduleRepo.save(schedule);  // Save the schedule
+
+                    Notification notification = new Notification();
+                    notification.setSchedule_id(schedule);
+                    notification.setMessage("New Bill Created: " + savedBill.getBill_name());
+                    notification.setNotif_created_date(new java.sql.Date(System.currentTimeMillis()));
+                    notificationRepo.save(notification);
                 }
             }
 

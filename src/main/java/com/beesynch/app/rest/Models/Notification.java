@@ -13,37 +13,19 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notification_id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule_id;
+    private Schedule schedule;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user_id;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "task_id", nullable = false)
-    private Task task; // Link notification to a task
-
-    @Column(nullable = false)
+    @Column
     private String message;
 
-    @Column(nullable = false)
-    private String status;
-
-    @Column(nullable = false)
+    @Column
     private Date notif_created_date;
-
-    @ManyToMany
-    @JoinTable(
-            name = "notification_recipients",
-            joinColumns = @JoinColumn(name = "notification_id"),
-            inverseJoinColumns = {
-                    @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-                    @JoinColumn(name = "hive_id", referencedColumnName = "hive_id")
-            }
-    )
-    private Set<HiveMembers> recipients = new HashSet<>();
 
 
     // Getters Method
@@ -52,63 +34,37 @@ public class Notification {
     }
 
     public Schedule getSchedule_id() {
-        return schedule_id;
+        return schedule;
     }
 
     public User getUser_id() {
-        return user_id;
+        return user;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public Date getNotif_created_date() {
         return notif_created_date;
     }
 
-    public Set<HiveMembers> getRecipients() {
-        return recipients;
-    }
-
-    public Task getTask() {
-        return task;
-    }
 
     // Setters Method
-    public void setNotification_id(Long id) {
-        this.notification_id = id;
-    }
-
     public void setSchedule_id(Schedule schedule) {
-        this.schedule_id = schedule;
+        this.schedule = schedule;
     }
 
     public void setUser_id(User user) {
-        this.user_id = user;
+        this.user = user;
     }
 
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public void setNotif_created_date(Date notif_created_date) {
         this.notif_created_date = notif_created_date;
     }
 
-    public void setRecipients(Set<HiveMembers> recipients) {
-        this.recipients = recipients;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
 }

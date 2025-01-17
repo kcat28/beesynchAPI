@@ -20,7 +20,7 @@ public class Bill {
     @Column(nullable = false)
     Double amount;
 
-   @Column(length = 200)
+    @Column(length = 200)
     private String description;
 
     @Column(nullable = false)

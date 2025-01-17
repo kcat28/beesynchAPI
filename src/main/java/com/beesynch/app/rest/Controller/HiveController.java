@@ -28,9 +28,6 @@ public class HiveController {
                     .body("Hive with name: " + hive.getHiveName() + " already exists.");
         }
 
-        // save new hive instance
-//        Hive hive = new Hive();
-//        hive.setHiveName(hive_name);
         hive.setHive_created_date(new java.sql.Date(System.currentTimeMillis()));
 
         hiveRepo.save(hive);

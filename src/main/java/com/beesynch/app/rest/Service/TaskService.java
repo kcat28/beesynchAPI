@@ -4,16 +4,11 @@ import com.beesynch.app.rest.DTO.ScheduleDTO;
 import com.beesynch.app.rest.DTO.TaskAssignmentDTO;
 import com.beesynch.app.rest.DTO.TaskCreationRequestDTO;
 
-import com.beesynch.app.rest.Models.Schedule;
-import com.beesynch.app.rest.Models.TaskAssignment;
-import com.beesynch.app.rest.Models.User;
-import com.beesynch.app.rest.Models.Task;
+import com.beesynch.app.rest.Models.*;
 
-import com.beesynch.app.rest.Repo.ScheduleRepo;
-import com.beesynch.app.rest.Repo.TaskAssignmentRepo;
-import com.beesynch.app.rest.Repo.TaskRepo;
-import com.beesynch.app.rest.Repo.UserRepo;
+import com.beesynch.app.rest.Repo.*;
 
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +27,9 @@ public class TaskService {
     private TaskAssignmentRepo taskAssignmentRepo;
 
     @Autowired
+    private NotificationRepo notificationRepo;
+
+    @Autowired
     private UserRepo userRepo; // assuming it exists to fetch users by ID
 
     public Task createFullTask(TaskCreationRequestDTO taskCreationRequest) {
@@ -48,7 +46,7 @@ public class TaskService {
                 throw new RuntimeException("Error: Task was not properly saved or its ID is null.");
             }
 
-            // Step 2: Create and save the Schedule, if provided
+            // Step 2: Create and save the Schedule. notifications are tied
             if (taskCreationRequest.getSchedules() != null && !taskCreationRequest.getSchedules().isEmpty()) {
 
                 for(ScheduleDTO scheduleDTO : taskCreationRequest.getSchedules()){
@@ -74,6 +72,16 @@ public class TaskService {
                     // Allow user to remain null if user_id is null
                     schedule.setUser_id(user);
                     scheduleRepo.save(schedule);
+
+                    // Create notification for this schedule
+                    if (user != null) {
+                        Notification notification = new Notification();
+                        notification.setSchedule_id(schedule);
+                        notification.setUser_id(user);
+                        notification.setMessage("New task Created: " + savedTask.getTitle());
+                        notification.setNotif_created_date(new java.sql.Date(System.currentTimeMillis()));
+                        notificationRepo.save(notification);
+                    }
 
                 }
             }
