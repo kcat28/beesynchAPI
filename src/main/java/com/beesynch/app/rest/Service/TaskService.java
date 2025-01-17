@@ -74,14 +74,13 @@ public class TaskService {
                     scheduleRepo.save(schedule);
 
                     // Create notification for this schedule
-                    if (user != null) {
                         Notification notification = new Notification();
                         notification.setSchedule_id(schedule);
                         notification.setUser_id(user);
                         notification.setMessage("New task Created: " + savedTask.getTitle());
                         notification.setNotif_created_date(new java.sql.Date(System.currentTimeMillis()));
                         notificationRepo.save(notification);
-                    }
+
 
                 }
             }
