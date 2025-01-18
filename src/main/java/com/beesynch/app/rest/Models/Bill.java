@@ -30,7 +30,7 @@ public class Bill {
     @Column(nullable = false)
     String bill_status;
 
-    @OneToMany(mappedBy = "bills", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "bill_id", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Schedule> schedule = new ArrayList<>();
 
