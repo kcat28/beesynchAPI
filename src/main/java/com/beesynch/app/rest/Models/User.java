@@ -26,20 +26,20 @@ import jakarta.persistence.*;
         @Column(nullable = false, unique = true)
         private String user_password;
 
+        @Transient // Ensures these aren't persisted in the database
+        private String currentPassword;
+
+        @Transient
+        private String newPassword;
+
 
         //Getter methods
         public long getId(){
             return id; }
 
-        public String getFirst_name(){
-            return first_name; }
-
-        public String getLast_name(){
-            return last_name; }
-
-        public String getUser_name(){
-            return user_name; }
-
+        public String getFirst_name(){return first_name; }
+        public String getLast_name(){return last_name; }
+        public String getUser_name(){return user_name; }
         public String getUser_email(){
             return user_email;
         }
@@ -47,26 +47,22 @@ import jakarta.persistence.*;
             return user_password;
         }
 
+
         // Setter methods
-
-        public void setId(long id) {
-            this.id = id; }
-
-        public void setFirst_name(String firstName) {
-            this.first_name = firstName; }
-
-        public void setLast_name(String lastName) {
-            this.last_name = lastName; }
-
-        public void setUser_name(String user_name) {
-            this.user_name = user_name; }
-
+        public void setId(long id) {this.id = id; }
+        public void setFirst_name(String firstName) {this.first_name = firstName; }
+        public void setLast_name(String lastName) {this.last_name = lastName; }
+        public void setUser_name(String user_name) {this.user_name = user_name; }
         public void setUser_email(String user_email) {
             this.user_email = user_email;
         }
         public void setUser_password(String user_password) {
             this.user_password = user_password;
         }
-    }
+
+}
+
+
+
 
 
