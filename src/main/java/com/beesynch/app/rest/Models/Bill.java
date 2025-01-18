@@ -1,6 +1,10 @@
 package com.beesynch.app.rest.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "bills")
@@ -26,6 +30,10 @@ public class Bill {
     @Column(nullable = false)
     String bill_status;
 
+    @OneToMany(mappedBy = "bills", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Schedule> schedule = new ArrayList<>();
+
     // Getters Method
     public Long getBill_id(){
         return bill_id;
@@ -39,11 +47,15 @@ public class Bill {
     public Double getBill_amount(){
         return amount;
     }
-    public String getDescription(){return description;
-    }
+    public String getDescription(){return description;}
     public String getBill_status(){
         return bill_status;
     }
+    public List<Schedule> getSchedule(){
+        return schedule;
+    } //01/19/2025
+
+
 
     // Setters Method
     public void setBill_id(Long id) {
@@ -56,10 +68,13 @@ public class Bill {
     public void setBill_amount(Double bill_amount) {
         this.amount = bill_amount;
     }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) {this.description = description;}
     public void setBill_status(String bill_status) {
         this.bill_status = bill_status;
     }
+    public void setSchedules(List<Schedule> schedules){
+        this.schedule = schedules;
+    } //01/19/2025
+
+
 }

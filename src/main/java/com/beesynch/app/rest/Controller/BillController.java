@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 //related to a hive
 //has bill id, hive id, bill name, amount, and bill_status
@@ -56,4 +62,43 @@ public class BillController {
         }
     }
 
+    @GetMapping("/all-bills") // done
+    public List<Bill> getAllBills() {
+        return billRepo.findAll();
+    }
+
+    //01/19/2025
+    @GetMapping("/bills-by-end-date")
+    public Map<String, List<String>> getBillsGroupedByEndDate() {
+        List<Object[]> results = billRepo.findBillDetails(); // Get raw results
+
+        // Group by end_date (formatted as yyyy-MM-dd) and include title + due_time in the result
+        return results.stream()
+                .collect(Collectors.groupingBy(
+                        result -> formatDateOnly((Date) result[1]), // Group by the formatted end_date (index 1)
+                        Collectors.mapping(result -> formatBillDetails(result), Collectors.toList()) // Format bill details
+                ));
+    }
+
+    // Helper function to extract the date portion for grouping
+    private String formatDateOnly(Date date) {
+        if (date == null) {
+            return "Unknown Date"; // Handle null values
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Date format (yyyy-MM-dd)
+        return dateFormat.format(date);
+    }
+
+    // Helper function to format the bill details
+    private String formatBillDetails(Object[] result) {
+        String billName = (String) result[0]; // Bill name (index 0)
+        Date dueTime = (Date) result[2]; // Due time (index 2)
+
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss"); // Time format
+
+        String formattedDueTime = (dueTime != null) ? timeFormat.format(dueTime) : "Unknown Due Time";
+
+        // Combine details into a readable string
+        return billName + " : " + formattedDueTime;
+    }
 }

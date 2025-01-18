@@ -19,4 +19,8 @@ public interface TaskRepo extends JpaRepository<Task, Long>{
 //)
 //    List<TaskCreationRequestDTO> findTaskSchedules();
 
+    //01/19/2025
+    @Query("SELECT t.title, s.end_date, s.due_time FROM Task t JOIN t.schedule s")
+    List<Object[]> findTaskDetails();
+
 }

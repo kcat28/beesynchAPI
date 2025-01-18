@@ -1,8 +1,9 @@
 package com.beesynch.app.rest.DTO;
 
-//this will be for login purposes
+//this will be for login and change password purposes
 
 import jakarta.persistence.Transient;
+
 
 public class UserDTO {
     private String user_name;

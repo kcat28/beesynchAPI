@@ -11,7 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
+import java.util.stream.Collectors;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/tasks")
     public class TaskController {
@@ -68,7 +74,7 @@ import java.util.List;
         }
 
         // READ all tasks
-        @GetMapping("/") // done
+        @GetMapping("/all-tasks") // done
         public List<Task> getAllTasks() {
             return taskRepo.findAll();
         }
@@ -90,6 +96,41 @@ import java.util.List;
 //            task.setTask_status(taskDetails.getTask_status());
 //            return taskRepo.save(task);
 //        }
+
+        //01/19/2025
+        @GetMapping("/tasks-by-end-date")
+        public Map<String, List<String>> getTasksGroupedByEndDate() {
+            List<Object[]> results = taskRepo.findTaskDetails(); // Get raw results
+
+            // Group by end_date (formatted as yyyy-MM-dd) and include title + due_time in the result
+            return results.stream()
+                    .collect(Collectors.groupingBy(
+                            result -> formatDateOnly((Date) result[1]), // Group by the formatted end_date (index 1)
+                            Collectors.mapping(result -> formatTaskDetails(result), Collectors.toList()) // Format task details
+                    ));
+        }
+
+        // Helper function to extract the date portion for grouping
+        private String formatDateOnly(Date date) {
+            if (date == null) {
+                return "Unknown Date"; // Handle null values
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Date format (yyyy-MM-dd)
+            return dateFormat.format(date);
+        }
+
+        // Helper function to format the bill details
+        private String formatTaskDetails(Object[] result) {
+            String taskName = (String) result[0]; // Bill name (index 0)
+            Date dueTime = (Date) result[2]; // Due time (index 2)
+
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss"); // Time format
+
+            String formattedDueTime = (dueTime != null) ? timeFormat.format(dueTime) : "Unknown Due Time";
+
+            // Combine details into a readable string
+            return taskName + " : " + formattedDueTime;
+        }
 
         //Delete a task
         @DeleteMapping("/{taskId}") // done

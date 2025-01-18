@@ -19,7 +19,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "bill_id")
-    private Bill bill_id;
+    private Bill bills;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -41,7 +41,7 @@ public class Schedule {
         return task;
     }
     public Bill getBill_id(){
-        return bill_id;
+        return bills;
     }
     public User getUser_id(){
         return user_id;
@@ -67,7 +67,7 @@ public class Schedule {
         this.task = task;
     }
     public void setBill_id(Bill bill){
-        this.bill_id = bill;
+        this.bills = bills;
     }
     public void setUser_id(User user){
         this.user_id = user;
