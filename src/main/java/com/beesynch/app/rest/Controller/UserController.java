@@ -2,31 +2,52 @@ package com.beesynch.app.rest.Controller;
 
 import com.beesynch.app.rest.Models.User;
 import com.beesynch.app.rest.Repo.UserRepo;
+import com.beesynch.app.rest.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
-@RestController
+@RestController()
+@RequestMapping("/users")
     public class UserController {
 
         @Autowired
         private UserRepo userRepo;
+
+        @Autowired
+        private UserService userService;
 
         @GetMapping(value = "/")
         public String getPage() {
             return "Cheese!";
         }
 
-        @GetMapping(value = "/users")
+        @GetMapping()
         public List<User> getUsers() {
             return userRepo.findAll();
+        }
+
+        @GetMapping("/profile")
+        public User getProfile() {
+            // Extract username from SecurityContext
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            System.out.println("Logged-in username: " + username);
+            // Fetch user details using the username
+            return userService.getUserByUsername(username);
+        }
+
+        // Get a user by ID
+        @GetMapping("/{id}")
+        public ResponseEntity<Object> getUserById(@PathVariable long id) {
+            try {
+                User user = userService.findUserById(id);
+                return ResponseEntity.ok(user);
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(404).body(e.getMessage()); // User not found
+            }
         }
 
         @PostMapping(value = "/save")
@@ -35,16 +56,15 @@ import java.util.List;
             return "saved...";
         }
 
-        @PutMapping(value = "update/{id}")
-        public String updateUser(@PathVariable long id, @RequestBody User user) {
-            User updatedUser = userRepo.findById(id).get();
-            updatedUser.setFirst_name(user.getFirst_name());
-            updatedUser.setLast_name(user.getLast_name());
-            updatedUser.setUser_name(user.getUser_name());
-            updatedUser.setUser_email(user.getUser_email());
-            updatedUser.setUser_password(user.getUser_password());
-            userRepo.save(updatedUser);
-            return "updated...";
+        // Update a user
+        @PutMapping("update/{id}")
+        public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody User user) {
+            try {
+                userService.updateUser(id, user);
+                return ResponseEntity.ok("User updated successfully!");
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(404).body(e.getMessage()); // Handle user not found or other errors
+            }
         }
 
         @DeleteMapping(value = "/delete/{id}")

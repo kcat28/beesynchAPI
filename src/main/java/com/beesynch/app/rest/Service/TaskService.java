@@ -13,6 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class TaskService {
@@ -119,8 +125,40 @@ public class TaskService {
             throw new RuntimeException("Error creating the task: " + e.getMessage());
         }
     }
-//    public Task getTasksByDate(TaskCreationRequestDTO taskCreationRequest) {
-//
-//    }
 
+    // 01/19/2025 - logic for calendar view display of task
+    public Map<String, List<String>> getTasksGroupedByEndDate() {
+        List<Object[]> results = taskRepo.findTaskDetails(); // Get raw results
+
+        // Group by end_date (formatted as yyyy-MM-dd) and include title + due_time in the result
+        return results.stream()
+                .collect(Collectors.groupingBy(
+                        result -> formatDateOnly((Date) result[1]), // Group by the formatted end_date (index 1)
+                        Collectors.mapping(result -> formatTaskDetails(result), Collectors.toList()) // Format task details
+                ));
+    }
+
+    // Helper function to extract the date portion for grouping
+    private String formatDateOnly(Date date) {
+        if (date == null) {
+            return "Unknown Date"; // Handle null values
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Date format (yyyy-MM-dd)
+        return dateFormat.format(date);
+    }
+
+    // Helper function to format the task details
+    private String formatTaskDetails(Object[] result) {
+        String taskName = (String) result[0]; // Task name (index 0)
+        Date dueTime = (Date) result[2]; // Due time (index 2)
+
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss"); // Time format
+
+        String formattedDueTime = (dueTime != null) ? timeFormat.format(dueTime) : "Unknown Due Time";
+
+        // Combine details into a readable string
+        return taskName + " : " + formattedDueTime;
+    }
 }
+
+

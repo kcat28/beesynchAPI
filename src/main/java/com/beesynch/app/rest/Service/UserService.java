@@ -3,7 +3,12 @@ package com.beesynch.app.rest.Service;
 import com.beesynch.app.rest.Models.User;
 import com.beesynch.app.rest.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,17 +16,10 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
-
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-
-
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
 
     // Get all users
     public List<User> getAllUsers() {
@@ -29,23 +27,21 @@ public class UserService {
     }
 
     private String getLoggedInUsername() {
-        // Use Spring Security's Authentication context to get the logged-in user (replace with this as needed)
-        // Example: return SecurityContextHolder.getContext().getAuthentication().getName();
-        return "dangsyana";
+        // Retrieve the current authenticated user from the SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null; // No logged-in user
+        }
+
+        return authentication.getName(); // Returns the username (or principal) of the logged-in user
     }
 
     // Create a new user
     public User saveUser(User user) {
-        // Check for duplicates (e.g., same email or username)
         if (userRepo.findByUserName(user.getUser_name()) != null) {
             throw new RuntimeException("Username already exists: " + user.getUser_name());
         }
-//        if (userRepo.findByUserEmail(user.getUser_email()) != null) {
-//            throw new RuntimeException("Email already exists: " + user.getUser_email());
-//        }
-
-        // Encrypt the password
-//        user.setUser_password(passwordEncoder.encode(user.getUser_password()));
 
         // Save user
         return userRepo.save(user);
@@ -56,13 +52,13 @@ public class UserService {
         return userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
     }
 
+    // get user profile by suername
+    public User getUserByUsername(String username) {
+        return userRepo.findByUserName(username);
+    }
+
     // Update a user's information
     public User updateUser(Long id, User userDetails) {
-
-//        if (userRepo.findByUserName(user.getUser_name()) != null) {
-//            throw new RuntimeException("Username already exists: " + user.getUser_name());
-//        }
-
         User existingUser = findUserById(id);
 
         existingUser.setFirst_name(userDetails.getFirst_name());
@@ -73,33 +69,18 @@ public class UserService {
         return userRepo.save(existingUser);
     }
 
-    // change/update password
+    // Change/update password
     public boolean changePassword(String currentPassword, String newPassword) {
-        // Get the currently logged-in user (this could be fetched from security context)
-        String username = getLoggedInUsername(); // Replace this with your logic to fetch authenticated user
+        String username = getLoggedInUsername();
         User user = userRepo.findByUserName(username);
 
-        // Validate current password
         if (user == null || !currentPassword.equals(user.getUser_password())) {
             return false; // Either user not found or current password doesn't match
         }
 
-        // Validate the new password (optional: ensure it meets requirements, etc.)
-        if (newPassword.length() < 8) { // Example password policy: at least 6 characters
-            throw new IllegalArgumentException("New password must be at least 6 characters.");
-        }
-        boolean hasUppercase = newPassword.chars().anyMatch(Character::isUpperCase);
-        boolean hasLowercase = newPassword.chars().anyMatch(Character::isLowerCase);
-        boolean hasDigit = newPassword.chars().anyMatch(Character::isDigit);
-        boolean hasSpecialChar = newPassword.chars().anyMatch(ch -> "!@#$%^&*()".indexOf(ch) >= 0);
-
-        if (hasUppercase && hasLowercase && hasDigit && hasSpecialChar) {
-            user.setUser_password(newPassword);
-            userRepo.save(user);
-            return true;
-        }
-
-        return false;
+        user.setUser_password(newPassword);
+        userRepo.save(user);
+        return true;
     }
 
     // Delete a user
@@ -108,5 +89,19 @@ public class UserService {
         userRepo.delete(user);
     }
 
+    // Implementing UserDetailsService's method
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepo.findByUserName(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
 
+        // Convert your User to UserDetails (used by Spring Security)
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUser_name())
+                .password(user.getUser_password()) // Password should be encoded properly
+                .roles("USER") // Adjust roles as needed
+                .build();
+    }
 }

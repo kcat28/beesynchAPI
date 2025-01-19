@@ -12,6 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class BillService {
@@ -81,6 +87,36 @@ public class BillService {
         }
     }
 
+    public Map<String, List<String>> getBillsGroupedByEndDate() {
+        List<Object[]> results = billRepo.findBillDetails(); // Fetch from repository
 
+        return results.stream()
+                .collect(Collectors.groupingBy(
+                        result -> formatDateOnly((Date) result[1]), // Group by formatted end_date (index 1)
+                        Collectors.mapping(result -> formatBillDetails(result), Collectors.toList()) // Format bill details
+                ));
+    }
+
+    // Helper to extract and format date for grouping
+    private String formatDateOnly(Date date) {
+        if (date == null) {
+            return "Unknown Date"; // Handle null values
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // yyyy-MM-dd format
+        return dateFormat.format(date);
+    }
+
+    // Helper to format bill details into a readable string
+    private String formatBillDetails(Object[] result) {
+        String billName = (String) result[0]; // Bill name (index 0)
+        Date dueTime = (Date) result[2]; // Due time (index 2)
+
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss"); // HH:mm:ss format
+
+        String formattedDueTime = (dueTime != null) ? timeFormat.format(dueTime) : "Unknown Due Time";
+
+        // Combine bill details into a formatted string
+        return billName + " : " + formattedDueTime;
+    }
 
 }

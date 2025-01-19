@@ -60,15 +60,9 @@ public class Schedule {
     }
 
     // Setters Method
-    public void setSchedule_id(Long id){
-        this.schedule_id = id;
-    }
-    public void setTask(Task task){
-        this.task = task;
-    }
-    public void setBill_id(Bill bill){
-        this.bill_id = bill_id;
-    }
+    public void setSchedule_id(Long id){this.schedule_id = id;}
+    public void setTask(Task task){this.task = task;}
+    public void setBill_id(Bill bill){this.bill_id = bill;}
     public void setUser_id(User user){
         this.user_id = user;
     }
