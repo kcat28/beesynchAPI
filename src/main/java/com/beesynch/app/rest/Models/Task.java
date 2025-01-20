@@ -31,6 +31,10 @@ public class Task {
     @Column(name = "rewardpts")
     private Integer rewardpts;
 
+    @Column(name = "img_path")
+    private String img_path;
+
+    @Column(name = "completion_date")
     private Date completion_date;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -59,6 +63,9 @@ public class Task {
     }
     public Integer getRewardpts(){
         return rewardpts;
+    }
+    public String getImg_path() {
+        return img_path;
     }
     public Date getCompletion_date(){
         return completion_date;
@@ -90,16 +97,10 @@ public class Task {
     public void setRewardpts(Integer rewardpts){
         this.rewardpts = rewardpts;
     }
-    public void setCompletion_date(Date completion_date) {
-        this.completion_date = completion_date;
-    }
-    public void setAssignments(List<TaskAssignment> assignments) {
-        this.assignments = assignments;
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
     }
 
-    public void setSchedules(List<Schedule> schedules){
-        this.schedule = schedules;
-    }
 
 
 }

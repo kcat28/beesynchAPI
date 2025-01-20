@@ -8,6 +8,7 @@ public class TaskCreationRequestDTO {
     private String category;
     private String task_status;
     private Integer rewardpts;
+    private String img_path;
     private List<ScheduleDTO> schedules; // Optional schedule details
     private List<TaskAssignmentDTO> assignments; // Optional assignments
 
@@ -28,11 +29,15 @@ public class TaskCreationRequestDTO {
     public Integer getRewardpts(){
         return rewardpts;
     }
+    public String getImg_path() {
+        return img_path;
+    }
     public List<ScheduleDTO> getSchedules() {
         return schedules;
     }
     public List<TaskAssignmentDTO> getAssignments() {
         return assignments;
     }
+
 
 }

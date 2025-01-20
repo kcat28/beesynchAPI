@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 18, 2025 at 04:31 PM
+-- Generation Time: Jan 20, 2025 at 05:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -101,7 +101,9 @@ INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `messag
 (12, 116, 2, 'New task Created: Testystsgs', '2025-01-17'),
 (13, 117, NULL, 'New task Created: Testystsgs', '2025-01-17'),
 (14, 118, 1, 'New task Created: Chingxa', '2025-01-17'),
-(15, 119, 2, 'New task Created: Chingxa', '2025-01-17');
+(15, 119, 2, 'New task Created: Chingxa', '2025-01-17'),
+(46, 150, 1, 'New task Created: This is a test Task auto notif', '2025-01-21'),
+(47, 151, 2, 'New task Created: This is a test Task auto notif', '2025-01-21');
 
 -- --------------------------------------------------------
 
@@ -152,7 +154,9 @@ INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_d
 (116, 100, NULL, 2, '2025-01-17', '2025-01-17', 'Daily', '23:35:19'),
 (117, 101, NULL, NULL, '2025-01-17', '2025-01-17', 'Daily', '23:35:19'),
 (118, 102, NULL, 1, '2025-01-17', '2025-01-17', 'Once', '04:25:38'),
-(119, 102, NULL, 2, '2025-01-17', '2025-01-17', 'Once', '04:25:38');
+(119, 102, NULL, 2, '2025-01-17', '2025-01-17', 'Once', '04:25:38'),
+(150, 118, NULL, 1, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
+(151, 118, NULL, 2, '2023-12-01', '2023-12-31', 'Daily', '06:00:00');
 
 -- --------------------------------------------------------
 
@@ -176,9 +180,10 @@ CREATE TABLE `task` (
 --
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
-(100, 'Testystsgs', NULL, 'Task', 'Ongoing', 30, NULL, NULL),
-(101, 'Testystsgs', NULL, 'Task', 'Ongoing', 30, NULL, NULL),
-(102, 'Chingxa', NULL, 'Task', 'Ongoing', 30, NULL, NULL);
+(100, 'Testystsgs', NULL, 'Task', 'Ongoing', 30, NULL, ''),
+(101, 'Testystsgs', NULL, 'Task', 'Ongoing', 30, NULL, ''),
+(102, 'Chingxa', NULL, 'Task', 'Ongoing', 30, NULL, ''),
+(118, 'This is a test Task auto notif', 'This is a sample task description.', 'General', 'Ongoing', 30, NULL, 'damn');
 
 -- --------------------------------------------------------
 
@@ -202,7 +207,9 @@ INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALU
 (123, 100, 2, '2025-01-17'),
 (124, 101, NULL, '2025-01-17'),
 (125, 102, 1, '2025-01-17'),
-(126, 102, 2, '2025-01-17');
+(126, 102, 2, '2025-01-17'),
+(157, 118, 1, '2023-12-01'),
+(158, 118, 2, '2023-12-02');
 
 -- --------------------------------------------------------
 
@@ -214,7 +221,7 @@ CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
-  `user_name` varchar(100) NOT NULL,
+  `user_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `user_email` varchar(100) NOT NULL,
   `user_password` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -317,7 +324,7 @@ ALTER TABLE `hive`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `ranking`
@@ -329,19 +336,19 @@ ALTER TABLE `ranking`
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
 
 --
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT for table `task_assignment`
 --
 ALTER TABLE `task_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -371,7 +378,7 @@ ALTER TABLE `household_members`
 -- Constraints for table `notification`
 --
 ALTER TABLE `notification`
-  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`schedule_id`),
+  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`schedule_id`) REFERENCES `schedule` (`schedule_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `notification_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --

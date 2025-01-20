@@ -47,6 +47,8 @@ public class TaskService {
             task.setCategory(taskCreationRequest.getCategory());
             task.setTask_status(taskCreationRequest.getTask_status());
             task.setRewardpts(taskCreationRequest.getRewardpts());
+            System.out.println("Image Path: " + taskCreationRequest.getImg_path());
+            task.setImg_path(taskCreationRequest.getImg_path());
             Task savedTask = taskRepo.save(task);
             if (savedTask.getId() == null) {
                 throw new RuntimeException("Error: Task was not properly saved or its ID is null.");
