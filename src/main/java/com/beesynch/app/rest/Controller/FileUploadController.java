@@ -30,11 +30,11 @@ public class FileUploadController {
         try {
             // Step 1: Save the file to the server
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(uploadPath + file.getOriginalFilename());
+            Path path = Paths.get(uploadPath + File.separator + file.getOriginalFilename());
             Files.write(path, bytes);
 
             // Step 2: Return the file path in the response
-            return ResponseEntity.ok().body("File uploaded successfully: " + path.toString());
+            return ResponseEntity.ok().body("{\"path\": \"" + path.toString().replace("\\", "\\\\") + "\"}");
 
         } catch (IOException e) {
             // Log the exception (use a logger in production)
