@@ -20,6 +20,7 @@ import jakarta.persistence.*;
         @Column(nullable = false)
         private String user_name;
 
+
         @Column(nullable = false, unique = true)
         private String user_email;
 

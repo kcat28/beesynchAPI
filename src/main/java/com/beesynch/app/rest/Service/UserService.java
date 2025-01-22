@@ -57,15 +57,58 @@ public class UserService implements UserDetailsService {
         return userRepo.findByUserName(username);
     }
 
-    // Update a user's information
-    public User updateUser(Long id, User userDetails) {
-        User existingUser = findUserById(id);
+//    // Update a user's information
+//    public User updateUser(Long id, User userDetails) {
+//        User existingUser = findUserById(id);
+//
+//        existingUser.setFirst_name(userDetails.getFirst_name());
+//        existingUser.setLast_name(userDetails.getLast_name());
+//        existingUser.setUser_name(userDetails.getUser_name());
+//        existingUser.setUser_email(userDetails.getUser_email());
+//
+//        return userRepo.save(existingUser);
+//    }
 
-        existingUser.setFirst_name(userDetails.getFirst_name());
-        existingUser.setLast_name(userDetails.getLast_name());
-        existingUser.setUser_name(userDetails.getUser_name());
-        existingUser.setUser_email(userDetails.getUser_email());
+    public User updateLoggedInUser(User userDetails) {
+        // Retrieve logged-in username
+        String username = getLoggedInUsername();
 
+        if (username == null) {
+            throw new RuntimeException("No user is currently logged in.");
+        }
+
+        // Fetch the user based on the username
+        User existingUser = userRepo.findByUserName(username);
+
+        if (existingUser == null) {
+            throw new RuntimeException("User not found with username: " + username);
+        }
+
+        // Update fields (ensure null checks to avoid overwriting with null)
+        if (userDetails.getFirst_name() != null) {
+            existingUser.setFirst_name(userDetails.getFirst_name());
+        }
+
+        if (userDetails.getLast_name() != null) {
+            existingUser.setLast_name(userDetails.getLast_name());
+        }
+
+        if (userDetails.getUser_email() != null) {
+            existingUser.setUser_email(userDetails.getUser_email());
+        }
+
+        // Note: Do not allow user to change their username here unless intended
+        // Remove this line if username changes are NOT allowed
+        if (userDetails.getUser_name() != null) {
+            // Check if the new username is already in use by another user
+            User existing = userRepo.findByUserName(userDetails.getUser_name());
+            if (existing != null && existing.getId() != existingUser.getId()) {
+                throw new RuntimeException("Username already exists: " + userDetails.getUser_name());
+            }
+            existingUser.setUser_name(userDetails.getUser_name());
+        }
+
+        // Save the updated user
         return userRepo.save(existingUser);
     }
 
@@ -76,6 +119,12 @@ public class UserService implements UserDetailsService {
 
         if (user == null || !currentPassword.equals(user.getUser_password())) {
             return false; // Either user not found or current password doesn't match
+        }
+        if (!newPassword.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$")) {
+            throw new IllegalArgumentException("Password must: \n" +
+                    "• Be at least 8 characters long. \n" +
+                    "• Contain at least one uppercase and one lowercase letter. \n" +
+                    "• Have at least one numeric digit.");
         }
 
         user.setUser_password(newPassword);

@@ -57,13 +57,15 @@ import org.springframework.http.ResponseEntity;
         }
 
         // Update a user
-        @PutMapping("update/{id}")
-        public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody User user) {
+        @PutMapping("/profile/edit")
+        public ResponseEntity<Object> updateUser(@RequestBody User userDetails) {
             try {
-                userService.updateUser(id, user);
-                return ResponseEntity.ok("User updated successfully!");
+                // Update user info based on the logged-in user's data
+                User updatedUser = userService.updateLoggedInUser(userDetails);
+                return ResponseEntity.ok(updatedUser);
             } catch (RuntimeException e) {
-                return ResponseEntity.status(404).body(e.getMessage()); // Handle user not found or other errors
+                // Handle errors such as "User not found", validation errors, etc.
+                return ResponseEntity.status(404).body(e.getMessage());
             }
         }
 
