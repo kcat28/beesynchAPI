@@ -8,4 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/notifications")
 public class NotifController {
 
+    //add get notif by id
+    //add get notif by hive id
 }

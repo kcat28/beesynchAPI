@@ -36,6 +36,7 @@ public class HiveMembersController {
     }
 
 
+    // add member to a hive db
 
 
 }

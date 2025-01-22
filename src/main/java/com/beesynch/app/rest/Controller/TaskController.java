@@ -11,12 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
-import java.util.stream.Collectors;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/tasks")
@@ -101,6 +96,19 @@ import java.util.Map;
         @GetMapping("/tasks-by-end-date")
         public Map<String, List<String>> getTasksGroupedByEndDate() {
             return taskService.getTasksGroupedByEndDate();
+        }
+
+
+        //for joyce popup
+        @GetMapping("/get_byId/{taskId}")
+        public Optional<Task> getTaskById(@PathVariable Long taskId) {
+            return taskRepo.findById(taskId);
+        }
+
+        //for nicole userId's Tasks
+        @GetMapping("/get_byUserId/{user_id}")
+        public List<Task> findTasksByUserId(@PathVariable Long user_id){
+            return taskRepo.findAll();
         }
 
         //Delete a task

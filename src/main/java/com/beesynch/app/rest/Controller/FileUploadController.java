@@ -28,7 +28,7 @@ public class FileUploadController {
         }
 
         try {
-            // Step 1: Save the file to the server
+            // Step 1: Save the file to the server(local machine E://)
             byte[] bytes = file.getBytes();
             Path path = Paths.get(uploadPath + File.separator + file.getOriginalFilename());
             Files.write(path, bytes);
