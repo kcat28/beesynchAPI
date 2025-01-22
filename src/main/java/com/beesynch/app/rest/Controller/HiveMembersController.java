@@ -1,6 +1,7 @@
 package com.beesynch.app.rest.Controller;
 
 import com.beesynch.app.rest.DTO.HiveMembersDTO;
+import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.HiveMembers;
 import com.beesynch.app.rest.Repo.HiveMembersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ public class HiveMembersController {
     @Autowired
     private HiveMembersRepo hiveMembersRepo;
 
-
     @GetMapping("/")
     public List<HiveMembersDTO> getAllHiveMembers(){
         return hiveMembersRepo.getAllHiveMembers();
@@ -33,6 +33,11 @@ public class HiveMembersController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/membersInfo")
+    public List<MembersTaskListDTO> getMembersTaskListInfo(){
+        return hiveMembersRepo.getMembersTaskListInfo();
     }
 
 

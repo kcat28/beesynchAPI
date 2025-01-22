@@ -1,6 +1,7 @@
 package com.beesynch.app.rest.Repo;
 
 import com.beesynch.app.rest.DTO.HiveMembersDTO;
+import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.HiveMemberId;
 import com.beesynch.app.rest.Models.HiveMembers;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +26,10 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
             "JOIN Hive h ON hm.id.hiveId = h.hive_id") // reference to hiveId in the composite key
     List<HiveMembersDTO> getAllHiveMembers();
 
+    @Query("SELECT new com.beesynch.app.rest.DTO.MembersTaskListDTO(u.first_name, u.img_path)" +
+            "FROM HiveMembers hm " +
+            "JOIN User u ON hm.id.userId = u.id ") // reference to userId in the composite key
+    List<MembersTaskListDTO> getMembersTaskListInfo();
 
 
 
