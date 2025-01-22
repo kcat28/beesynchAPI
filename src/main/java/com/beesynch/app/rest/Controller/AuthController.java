@@ -41,7 +41,7 @@ public class AuthController {
             }
 
             // Step 2: Generate JWT token for authenticated user
-            String token = jwtUtil.generateToken(user.getUser_name());
+            String token = jwtUtil.generateToken(Long.toString(user.getId()));
 
             // Step 3: Return the token in the response
             return ResponseEntity.ok().body(

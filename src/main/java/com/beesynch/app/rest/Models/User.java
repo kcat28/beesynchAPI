@@ -27,6 +27,9 @@ import jakarta.persistence.*;
         @Column(nullable = false, unique = true)
         private String user_password;
 
+        @Column
+        private String img_path;
+
         @Transient // Ensures these aren't persisted in the database
         private String currentPassword;
 
@@ -47,6 +50,9 @@ import jakarta.persistence.*;
         public String getUser_password(){
             return user_password;
         }
+        public String getImg_path(){
+            return img_path;
+        }
 
 
         // Setter methods
@@ -59,6 +65,10 @@ import jakarta.persistence.*;
         }
         public void setUser_password(String user_password) {
             this.user_password = user_password;
+        }
+
+        public void setImg_path(String img_path) {
+            this.img_path = img_path;
         }
 
 }

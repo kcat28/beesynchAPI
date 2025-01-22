@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2025 at 05:20 PM
+-- Generation Time: Jan 22, 2025 at 11:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,8 +33,16 @@ CREATE TABLE `bills` (
   `bill_name` varchar(100) NOT NULL,
   `amount` double NOT NULL,
   `description` varchar(200) DEFAULT NULL,
-  `bill_status` varchar(100) NOT NULL
+  `bill_status` varchar(100) NOT NULL,
+  `img_path` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `bills`
+--
+
+INSERT INTO `bills` (`bill_id`, `hive_id`, `bill_name`, `amount`, `description`, `bill_status`, `img_path`) VALUES
+(12, 1, 'Electricity Bill', 250.75, 'Monthly electricity bill for the hive', 'Pending', '/images/electricity_bill.jpg');
 
 -- --------------------------------------------------------
 
@@ -97,13 +105,8 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `message`, `notif_created_date`) VALUES
-(11, 115, 1, 'New task Created: Testystsgs', '2025-01-17'),
-(12, 116, 2, 'New task Created: Testystsgs', '2025-01-17'),
-(13, 117, NULL, 'New task Created: Testystsgs', '2025-01-17'),
-(14, 118, 1, 'New task Created: Chingxa', '2025-01-17'),
-(15, 119, 2, 'New task Created: Chingxa', '2025-01-17'),
-(46, 150, 1, 'New task Created: This is a test Task auto notif', '2025-01-21'),
-(47, 151, 2, 'New task Created: This is a test Task auto notif', '2025-01-21');
+(65, 169, 1, 'New task Created: Pls cuh', '2025-01-21'),
+(66, 170, NULL, 'New Bill Created: Electricity Bill', '2025-01-22');
 
 -- --------------------------------------------------------
 
@@ -150,13 +153,8 @@ CREATE TABLE `schedule` (
 --
 
 INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_date`, `end_date`, `recurrence`, `due_time`) VALUES
-(115, 100, NULL, 1, '2025-01-17', '2025-01-17', 'Daily', '23:35:19'),
-(116, 100, NULL, 2, '2025-01-17', '2025-01-17', 'Daily', '23:35:19'),
-(117, 101, NULL, NULL, '2025-01-17', '2025-01-17', 'Daily', '23:35:19'),
-(118, 102, NULL, 1, '2025-01-17', '2025-01-17', 'Once', '04:25:38'),
-(119, 102, NULL, 2, '2025-01-17', '2025-01-17', 'Once', '04:25:38'),
-(150, 118, NULL, 1, '2023-12-01', '2023-12-31', 'Daily', '06:00:00'),
-(151, 118, NULL, 2, '2023-12-01', '2023-12-31', 'Daily', '06:00:00');
+(169, 135, NULL, 1, '2025-01-20', '2025-01-20', 'Once', '09:25:25'),
+(170, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00');
 
 -- --------------------------------------------------------
 
@@ -180,10 +178,7 @@ CREATE TABLE `task` (
 --
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
-(100, 'Testystsgs', NULL, 'Task', 'Ongoing', 30, NULL, ''),
-(101, 'Testystsgs', NULL, 'Task', 'Ongoing', 30, NULL, ''),
-(102, 'Chingxa', NULL, 'Task', 'Ongoing', 30, NULL, ''),
-(118, 'This is a test Task auto notif', 'This is a sample task description.', 'General', 'Ongoing', 30, NULL, 'damn');
+(135, 'Pls cuh', NULL, 'Task', 'Ongoing', 10, NULL, 'E:/XAMPP/htdocs/uploads/Pls cuh.jpg');
 
 -- --------------------------------------------------------
 
@@ -203,13 +198,7 @@ CREATE TABLE `task_assignment` (
 --
 
 INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALUES
-(122, 100, 1, '2025-01-17'),
-(123, 100, 2, '2025-01-17'),
-(124, 101, NULL, '2025-01-17'),
-(125, 102, 1, '2025-01-17'),
-(126, 102, 2, '2025-01-17'),
-(157, 118, 1, '2023-12-01'),
-(158, 118, 2, '2023-12-02');
+(176, 135, 1, '2025-01-20');
 
 -- --------------------------------------------------------
 
@@ -223,16 +212,18 @@ CREATE TABLE `users` (
   `last_name` varchar(100) NOT NULL,
   `user_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `user_email` varchar(100) NOT NULL,
-  `user_password` varchar(200) NOT NULL
+  `user_password` varchar(200) NOT NULL,
+  `img_path` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `user_name`, `user_email`, `user_password`) VALUES
-(1, 'John Efren', 'Gannaban', 'kcat28', 'jefjef1412@gmail.com', '12345'),
-(2, 'Diana Nicole', 'Danga', 'dangsyana', 'dndanga37@gmail.com', '5555');
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `user_name`, `user_email`, `user_password`, `img_path`) VALUES
+(1, 'John Efren', 'Gannaban', 'kcat28', 'jefjef1412@gmail.com', '12345', NULL),
+(2, 'Diana Nicole', 'Danga', 'dangsyana', 'dndanga37@gmail.com', '5555', NULL),
+(7, 'Jascent Pearl', 'Navarro', 'Jassy', 'jassy@gmail.com', '1234', 'test.jpgasdas');
 
 --
 -- Indexes for dumped tables
@@ -312,7 +303,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bills`
 --
 ALTER TABLE `bills`
-  MODIFY `bill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `bill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `hive`
@@ -324,7 +315,7 @@ ALTER TABLE `hive`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `ranking`
@@ -336,25 +327,25 @@ ALTER TABLE `ranking`
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
 
 --
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
 
 --
 -- AUTO_INCREMENT for table `task_assignment`
 --
 ALTER TABLE `task_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables

@@ -30,6 +30,9 @@ public class Bill {
     @Column(nullable = false)
     String bill_status;
 
+    @Column
+    String img_path;
+
     @OneToMany(mappedBy = "bill_id", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Schedule> schedule = new ArrayList<>();
@@ -71,6 +74,9 @@ public class Bill {
     public void setDescription(String description) {this.description = description;}
     public void setBill_status(String bill_status) {
         this.bill_status = bill_status;
+    }
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
     }
     public void setSchedules(List<Schedule> schedules){
         this.schedule = schedules;

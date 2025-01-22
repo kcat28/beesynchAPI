@@ -49,6 +49,7 @@ public class BillService {
             bill.setBill_amount(billCreationRequest.getAmount());
             bill.setDescription(billCreationRequest.getDescription());
             bill.setBill_status(billCreationRequest.getBill_status());
+            bill.setImg_path(billCreationRequest.getImg_path());
 
             // save the bill to the repository(sql)
             Bill savedBill = billRepo.save(bill);

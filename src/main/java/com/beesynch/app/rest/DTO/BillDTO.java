@@ -12,7 +12,7 @@ public class BillDTO {
     private String bill_status;
     private String description;
     private List<ScheduleDTO> schedules;
-
+    private String img_path;
 
     public void setHive_id(Long hive_id){
         this.hive_id = hive_id;
@@ -52,5 +52,9 @@ public class BillDTO {
     }
     public List<ScheduleDTO> getSchedules() {
         return schedules;
+    }
+
+    public String getImg_path() {
+        return img_path;
     }
 }
