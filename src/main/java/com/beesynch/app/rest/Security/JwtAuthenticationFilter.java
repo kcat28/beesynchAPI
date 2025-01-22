@@ -35,11 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = authHeader.substring(7); // Extract the JWT token
 
             try {
-                String username = jwtUtil.extractUsername(jwt); // Extract username from the token
+                Long userId = jwtUtil.extractUserId(jwt); // Extract user ID from the token
 
                 // Validate the JWT and check authentication
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    var userDetails = userService.loadUserByUsername(username);
+                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    var userDetails = userService.loadUserById(userId);
 
                     // Check token validity
                     if (jwtUtil.isValidToken(jwt, userDetails)) {

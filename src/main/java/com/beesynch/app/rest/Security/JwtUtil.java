@@ -21,24 +21,25 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // Generate JWT token
-    public String generateToken(String username) {
+    // Modify the generateToken method to use user ID
+    public String generateToken(Long userId) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Extract username from token
-    public String extractUsername(String token) {
-        return Jwts.parserBuilder()
+    // Extract user ID from token
+    public Long extractUserId(String token) {
+        String userId = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+        return Long.parseLong(userId);
     }
 
     // Validate token

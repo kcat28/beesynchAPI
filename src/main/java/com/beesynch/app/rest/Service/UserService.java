@@ -3,7 +3,6 @@ package com.beesynch.app.rest.Service;
 import com.beesynch.app.rest.Models.User;
 import com.beesynch.app.rest.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,22 +51,10 @@ public class UserService implements UserDetailsService {
         return userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
     }
 
-    // get user profile by suername
+    // get user profile by username
     public User getUserByUsername(String username) {
         return userRepo.findByUserName(username);
     }
-
-//    // Update a user's information
-//    public User updateUser(Long id, User userDetails) {
-//        User existingUser = findUserById(id);
-//
-//        existingUser.setFirst_name(userDetails.getFirst_name());
-//        existingUser.setLast_name(userDetails.getLast_name());
-//        existingUser.setUser_name(userDetails.getUser_name());
-//        existingUser.setUser_email(userDetails.getUser_email());
-//
-//        return userRepo.save(existingUser);
-//    }
 
     public User updateLoggedInUser(User userDetails) {
         // Retrieve logged-in username
@@ -145,6 +132,18 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
+
+        // Convert your User to UserDetails (used by Spring Security)
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUser_name())
+                .password(user.getUser_password()) // Password should be encoded properly
+                .roles("USER") // Adjust roles as needed
+                .build();
+    }
+
+    // Method to load user by ID
+    public UserDetails loadUserById(Long userId) throws UsernameNotFoundException {
+        User user = userRepo.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
 
         // Convert your User to UserDetails (used by Spring Security)
         return org.springframework.security.core.userdetails.User.builder()
