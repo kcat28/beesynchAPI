@@ -19,6 +19,26 @@ public class ScheduleDTO {
     @JsonProperty("due_time")  // Ensure this matches the JSON property name
     private Time due_time;
 
+    public ScheduleDTO() {}
+
+    // full initialization
+// Constructor matching stream logic
+    public ScheduleDTO(Long taskId, Date start_date, Date end_date, String recurrence, Time due_time) {
+        this.task = taskId;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.recurrence = recurrence;
+        this.due_time = due_time;
+    }
+
+
+    // Minimal constructor
+    public ScheduleDTO(Long task, Date start_date, Date end_date) {
+        this.task = task;
+        this.start_date = start_date;
+        this.end_date = end_date;
+    }
+
     // Getters and setters
     public Long getTask(){return task;}
     public Long setTask(){return task;}

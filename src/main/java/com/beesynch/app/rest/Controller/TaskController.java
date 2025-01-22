@@ -4,6 +4,7 @@ package com.beesynch.app.rest.Controller;
 import com.beesynch.app.rest.DTO.ScheduleDTO;
 import com.beesynch.app.rest.DTO.TaskAssignmentDTO;
 import com.beesynch.app.rest.DTO.TaskCreationRequestDTO;
+import com.beesynch.app.rest.DTO.TaskDTO;
 import com.beesynch.app.rest.Service.TaskService;
 import com.beesynch.app.rest.Models.Task;
 import com.beesynch.app.rest.Repo.TaskRepo;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -100,18 +102,57 @@ import java.util.*;
 
 
         //for joyce popup
-        @GetMapping("/get_byId/{taskId}")
-        public Optional<Task> getTaskById(@PathVariable Long taskId) {
-            return taskRepo.findById(taskId);
-        }
+    @GetMapping("/get_byId/{taskId}")
+    public Optional<TaskDTO> getTaskById(@PathVariable Long taskId) {
+        return taskRepo.findById(taskId)
+            .map(task -> new TaskDTO(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getCategory(),
+                task.getTask_status(),
+                task.getRewardpts(),
+                task.getImg_path(),
+                task.getSchedule().stream()
+                        .map(schedule -> new ScheduleDTO(
+                                schedule.getTask().getId(),
+                                schedule.getStart_date(),
+                                schedule.getEnd_date(),
+                                schedule.getRecurrence(),
+                                schedule.getDue_time()
+                        ))
+                        .collect(Collectors.toList())
+            ));
+    }
 
-        //for nicole userId's Tasks
-        @GetMapping("/get_byUserId/{user_id}")
-        public List<Task> findTasksByUserId(@PathVariable Long user_id){
-            return taskRepo.findAll();
-        }
+    //for nicole userId's Tasks
+    @GetMapping("/get_byUserId/{user_id}")
+    public List<TaskDTO> findTasksByUserId(@PathVariable Long user_id) {
+        return taskRepo.findTasksByUserId(user_id).stream()
+            .map(Task -> new TaskDTO(
+                Task.getId(),
+                Task.getTitle(),
+                Task.getDescription(),
+                Task.getCategory(),
+                Task.getTask_status(),
+                Task.getRewardpts(),
+                Task.getImg_path(),
+                Task.getSchedule().stream()
+                        .map(schedule -> new ScheduleDTO(
+                                schedule.getTask().getId(),
+                                schedule.getStart_date(),
+                                schedule.getEnd_date(),
+                                schedule.getRecurrence(),
+                                schedule.getDue_time()
+                        ))
+                        .collect(Collectors.toList())
+            ))
+            .collect(Collectors.toList());
+    }
 
-        //Delete a task
+
+
+    //Delete a task
         @DeleteMapping("/{taskId}") // done
         public String deleteTask(@PathVariable Long taskId) {
             taskRepo.deleteById(taskId);
