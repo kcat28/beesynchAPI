@@ -155,27 +155,19 @@ import java.util.stream.Collectors;
 
     //for nicole userId's Tasks
     @GetMapping("/get_byUserId/{user_id}")
-    public List<TaskDTO> findTasksByUserId(@PathVariable Long user_id) {
+    public List<Map<String, Object>> findTasksByUserId(@PathVariable Long user_id) {
         return taskRepo.findTasksByUserId(user_id).stream()
-            .map(Task -> new TaskDTO(
-                Task.getId(),
-                Task.getTitle(),
-                Task.getDescription(),
-                Task.getCategory(),
-                Task.getTask_status(),
-                Task.getRewardpts(),
-                Task.getImg_path(),
-                Task.getSchedule().stream()
-                        .map(schedule -> new ScheduleDTO(
-                                schedule.getTask().getId(),
-                                schedule.getStart_date(),
-                                schedule.getEnd_date(),
-                                schedule.getRecurrence(),
-                                schedule.getDue_time()
-                        ))
-                        .collect(Collectors.toList())
-            ))
-            .collect(Collectors.toList());
+                .map(Task -> {
+                    Map<String, Object> taskMap = new HashMap<>();
+                    taskMap.put("title", Task.getTitle());
+                    taskMap.put("img_path", Task.getImg_path());
+                    taskMap.put("due_time", Task.getSchedule().stream()
+                            .map(schedule -> schedule.getDue_time())
+                            .findFirst()
+                            .orElse(null));
+                    return taskMap;
+                })
+                .collect(Collectors.toList());
     }
 
 
