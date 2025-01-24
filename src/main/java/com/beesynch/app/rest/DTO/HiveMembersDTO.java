@@ -20,11 +20,14 @@ public class HiveMembersDTO {
     private int points;
     private String achievements;
 
+    private String img_path;
+
     // Constructor that matches the query
-    public HiveMembersDTO(Long userId, String userName, String firstName, String lastName,
+    public HiveMembersDTO(Long userId, String img_path, String userName, String firstName, String lastName,
                           String userEmail, Long hiveId, String hiveName, String role,
                           int points, String achievements) {
         this.userId = userId;
+        this.img_path = img_path;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -115,5 +118,13 @@ public class HiveMembersDTO {
 
     public void setAchievements(List<String> achievements) {
         this.achievements = String.valueOf(achievements);
+    }
+
+    public String getImg_path(){
+        return img_path;
+    }
+
+    public void setImg_path(String img_path){
+        this.img_path = img_path;
     }
 }

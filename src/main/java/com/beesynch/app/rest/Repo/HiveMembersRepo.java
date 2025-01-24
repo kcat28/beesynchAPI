@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
 
-    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points, hm.achievements) " +
+    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.img_path, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points, hm.achievements) " +
             "FROM HiveMembers hm " +
             "JOIN User u ON hm.id.userId = u.id " +  //  reference to userId in the composite key
             "JOIN Hive h ON hm.id.hiveId = h.hive_id " +  //  reference to hiveId in the composite key
@@ -20,7 +20,7 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
     HiveMembersDTO findByUsername(@Param("user_name") String username);
 
 
-    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points, hm.achievements) " +
+    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.img_path, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points, hm.achievements) " +
             "FROM HiveMembers hm " +
             "JOIN User u ON hm.id.userId = u.id " +  // reference to userId in the composite key
             "JOIN Hive h ON hm.id.hiveId = h.hive_id") // reference to hiveId in the composite key
