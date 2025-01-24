@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class MembersTaskListDTO {
     private Long userId;
-    private String firstName;
+    private String userName;
     private String img_path;
 
 
     // Constructor that matches the query
-    public MembersTaskListDTO(Long userId, String firstName, String img_path) {
+    public MembersTaskListDTO(Long userId, String userName, String img_path) {
         this.userId = userId;
-        this.firstName = firstName;
+        this.userName = userName;
         this.img_path = img_path;
     }
 
@@ -26,11 +26,11 @@ public class MembersTaskListDTO {
         this.userId = userId;
     }
 
-    public String getFirstname() {
-        return firstName;
+    public String getUsername() {
+        return userName;
     }
-    public void setFirstname(String firstName) {
-        this.firstName = firstName;
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public String getImg_path() {

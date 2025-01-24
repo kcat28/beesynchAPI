@@ -26,7 +26,7 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
             "JOIN Hive h ON hm.id.hiveId = h.hive_id") // reference to hiveId in the composite key
     List<HiveMembersDTO> getAllHiveMembers();
 
-    @Query("SELECT new com.beesynch.app.rest.DTO.MembersTaskListDTO(u.id, u.first_name, u.img_path)" +
+    @Query("SELECT new com.beesynch.app.rest.DTO.MembersTaskListDTO(u.id, u.user_name, u.img_path)" +
             "FROM HiveMembers hm " +
             "JOIN User u ON hm.id.userId = u.id ") // reference to userId in the composite key
     List<MembersTaskListDTO> getMembersTaskListInfo();
