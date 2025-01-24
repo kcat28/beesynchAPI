@@ -32,6 +32,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
         try {
+            System.out.println(userDTO);
             // Step 1: Authenticate the user's credentials
             User user = userRepo.findByUserName(userDTO.getUser_name()); // Find user by username
 

@@ -28,22 +28,20 @@ public class FileUploadController {
         }
 
         try {
-            // Step 1: Save the file to the server(local machine E://)
+            // Step 1: Save the file to the server
+            String fileName = file.getOriginalFilename();
+            Path path = Paths.get(uploadPath + File.separator + fileName);
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(uploadPath + File.separator + file.getOriginalFilename());
             Files.write(path, bytes);
 
-            // Step 2: Return the file path in the response
-            return ResponseEntity.ok().body("{\"path\": \"" + path.toString().replace("\\", "\\\\") + "\"}");
-
+            // Step 2: Return the file name in the response
+            return ResponseEntity.ok().body("{\"fileName\": \"" + fileName + "\"}");
         } catch (IOException e) {
-            // Log the exception (use a logger in production)
-            e.printStackTrace(); // This will print the error details in your console
+            // Log the exception
+            e.printStackTrace(); //error details
             System.out.println("Error during file upload: " + e.getMessage());
 
-            // Return a meaningful message for debugging
             return ResponseEntity.status(500).body("Something went wrong: " + e.getMessage());
         }
     }
-
 }
