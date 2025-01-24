@@ -2,14 +2,13 @@ package com.beesynch.app.rest.DTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.Collections;
-import java.util.List;
-
 @JsonPropertyOrder({
-        "userId", "userName", "firstName", "lastName", "userEmail", "hiveId", "hiveName", "role", "points", "achievements"
+        "hiveId", "hiveName", "userId", "img_path", "userEmail", "userName", "firstName", "lastName",
+          "role", "points", "achievements"
 })
 public class HiveMembersDTO {
     private Long userId;
+    private String img_path;
     private String userName;
     private String firstName;
     private String lastName;
@@ -20,9 +19,7 @@ public class HiveMembersDTO {
     private int points;
     private String achievements;
 
-    private String img_path;
-
-    // Constructor that matches the query
+    // Constructor
     public HiveMembersDTO(Long userId, String img_path, String userName, String firstName, String lastName,
                           String userEmail, Long hiveId, String hiveName, String role,
                           int points, String achievements) {
@@ -48,28 +45,36 @@ public class HiveMembersDTO {
         this.userId = userId;
     }
 
-    public String getUsername() {
+    public String getImg_path() {
+        return img_path;
+    }
+
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
+    }
+
+    public String getUserName() { //
         return userName;
     }
 
-    public void setUsername(String username) {
-        this.userName = username;
+    public void setUserName(String userName) { //
+        this.userName = userName;
     }
 
-    public String getFirstname() {
+    public String getFirstName() { //
         return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstName = firstname;
+    public void setFirstName(String firstName) { //
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
+    public String getLastName() { //
         return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastName = lastname;
+    public void setLastName(String lastName) { //
+        this.lastName = lastName;
     }
 
     public String getUserEmail() {
@@ -104,27 +109,19 @@ public class HiveMembersDTO {
         this.role = role;
     }
 
-    public Integer getPoints() {
+    public int getPoints() {
         return points;
     }
 
-    public void setPoints(Integer points) {
+    public void setPoints(int points) {
         this.points = points;
     }
 
-    public List<String> getAchievements() {
-        return Collections.singletonList(achievements);
+    public String getAchievements() { //
+        return achievements;
     }
 
-    public void setAchievements(List<String> achievements) {
-        this.achievements = String.valueOf(achievements);
-    }
-
-    public String getImg_path(){
-        return img_path;
-    }
-
-    public void setImg_path(String img_path){
-        this.img_path = img_path;
+    public void setAchievements(String achievements) { //
+        this.achievements = achievements;
     }
 }

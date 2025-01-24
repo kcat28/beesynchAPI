@@ -68,4 +68,8 @@ public class BillController {
     }
 
 
+    @GetMapping("/getAllBills")
+    public List<Bill> getAllBills(){
+        return billRepo.findAll();
+    }
 }

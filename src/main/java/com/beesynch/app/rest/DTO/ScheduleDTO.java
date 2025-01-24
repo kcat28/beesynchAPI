@@ -3,6 +3,8 @@ package com.beesynch.app.rest.DTO;
 import java.sql.Date;
 import java.sql.Time;
 
+import com.beesynch.app.rest.Models.Bill;
+import com.beesynch.app.rest.Models.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -38,6 +40,7 @@ public class ScheduleDTO {
         this.start_date = start_date;
         this.end_date = end_date;
     }
+
 
     // Getters and setters
     public Long getTask(){return task;}

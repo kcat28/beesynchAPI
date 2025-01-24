@@ -1,6 +1,8 @@
 package com.beesynch.app.rest.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,15 +10,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "bills")
+@JsonPropertyOrder({"hive_id", "schedule", "bill_id", "bill_name", "bill_status", "bill_description", "bill_amount", "img_path"})
 public class Bill {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bill_id;
 
     @ManyToOne
     @JoinColumn(name = "hive_id", nullable = false)
     private Hive hive_id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long bill_id;
 
     @Column(length = 100)
     String bill_name;
@@ -38,11 +41,15 @@ public class Bill {
     private List<Schedule> schedule = new ArrayList<>();
 
     // Getters Method
-    public Long getBill_id(){
-        return bill_id;
-    }
     public Hive getHive_id(){
         return hive_id;
+    }
+    public List<Schedule> getSchedule(){
+        return schedule;
+    } //01/19/2025
+
+    public Long getBill_id(){
+        return bill_id;
     }
     public String getBill_name(){
         return bill_name;
@@ -54,9 +61,10 @@ public class Bill {
     public String getBill_status(){
         return bill_status;
     }
-    public List<Schedule> getSchedule(){
-        return schedule;
-    } //01/19/2025
+
+    public String getImg_path(){
+        return img_path;
+    }
 
 
 

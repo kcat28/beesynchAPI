@@ -1,4 +1,5 @@
 package com.beesynch.app.rest.Models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 
@@ -25,6 +26,7 @@ import jakarta.persistence.*;
         private String user_email;
 
         @Column(nullable = false, unique = true)
+        @JsonIgnore
         private String user_password;
 
         @Column

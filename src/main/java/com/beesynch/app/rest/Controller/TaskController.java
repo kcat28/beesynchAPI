@@ -72,27 +72,55 @@ import java.util.stream.Collectors;
 
         // READ all tasks
         @GetMapping("/all-tasks") // done
-        public List<Task> getAllTasks() {
-            return taskRepo.findAll();
+        public List<TaskDTO> getAllTasks() {
+            return taskRepo.findAll().stream()
+                    .map(task -> new TaskDTO(
+                        task.getId(),
+                        task.getTitle(),
+                        task.getDescription(),
+                        task.getCategory(),
+                        task.getTask_status(),
+                        task.getRewardpts(),
+                        task.getImg_path(),
+                        task.getSchedule().stream()
+                                .map(schedule -> new ScheduleDTO(
+                                        schedule.getTask().getId(),
+                                        schedule.getStart_date(),
+                                        schedule.getEnd_date(),
+                                        schedule.getRecurrence(),
+                                        schedule.getDue_time()
+                                ))
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
         }
+
 
         // READ all open tasks (tasks with no assignment)
         @GetMapping("/open") // done
-        public List<Task> getOpenTasks() {
-            return taskRepo.findUnassignedTasks();
-        }
+        public List<TaskDTO> getOpenTasks() {
+            return taskRepo.findUnassignedTasks().stream()
+                    .map(task -> new TaskDTO(
+                        task.getId(),
+                        task.getTitle(),
+                        task.getDescription(),
+                        task.getCategory(),
+                        task.getTask_status(),
+                        task.getRewardpts(),
+                        task.getImg_path(),
+                        task.getSchedule().stream()
+                                .map(schedule -> new ScheduleDTO(
+                                        schedule.getTask().getId(),
+                                        schedule.getStart_date(),
+                                        schedule.getEnd_date(),
+                                        schedule.getRecurrence(),
+                                        schedule.getDue_time()
+                                ))
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
 
-        //UPDATE (task fields)
-//        @PutMapping("/{taskId}")
-//        public Task updateTask(@PathVariable Long taskId, @RequestBody Task taskDetails) {
-//            Task task = taskRepo.findById(taskId)
-//                    .orElseThrow(() -> new RuntimeException("Task not found."));
-//            task.setTitle(taskDetails.getTitle());
-//            task.setDescription(taskDetails.getDescription());
-//            task.setCategory(taskDetails.getCategory());
-//            task.setTask_status(taskDetails.getTask_status());
-//            return taskRepo.save(task);
-//        }
+        }
 
         //01/19/2025 - for calendar view
         @GetMapping("/tasks-by-end-date")
@@ -149,6 +177,19 @@ import java.util.stream.Collectors;
             ))
             .collect(Collectors.toList());
     }
+
+
+    //UPDATE (task fields)
+//        @PutMapping("/{taskId}")
+//        public Task updateTask(@PathVariable Long taskId, @RequestBody Task taskDetails) {
+//            Task task = taskRepo.findById(taskId)
+//                    .orElseThrow(() -> new RuntimeException("Task not found."));
+//            task.setTitle(taskDetails.getTitle());
+//            task.setDescription(taskDetails.getDescription());
+//            task.setCategory(taskDetails.getCategory());
+//            task.setTask_status(taskDetails.getTask_status());
+//            return taskRepo.save(task);
+//        }
 
 
 

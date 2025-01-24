@@ -19,6 +19,7 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "bill_id")
+    @JsonBackReference
     private Bill bill_id;
 
     @ManyToOne

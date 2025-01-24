@@ -28,4 +28,5 @@ public interface TaskRepo extends JpaRepository<Task, Long>{
     @Query("SELECT t FROM Task t JOIN t.assignments ta WHERE ta.user.id = :user_id")
     List<Task> findTasksByUserId(@Param("user_id") Long userId);
 
+
 }
