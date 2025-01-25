@@ -62,7 +62,6 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody UserDTO userDTO) {
         try {
-            // Delegate password changing to the UserService
             boolean isChanged = userService.changePassword(
                     userDTO.getCurrentPassword(),
                     userDTO.getNewPassword()
@@ -75,8 +74,9 @@ public class AuthController {
                         .body("Current password is incorrect or new password is invalid.");
             }
 
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            // Handle unexpected errors
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Something went wrong while changing the password.");
         }

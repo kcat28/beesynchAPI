@@ -105,7 +105,7 @@ public class UserService implements UserDetailsService {
         User user = userRepo.findByUserName(username);
 
         if (user == null || !currentPassword.equals(user.getUser_password())) {
-            return false; // Either user not found or current password doesn't match
+            throw new IllegalArgumentException("Current password is incorrect.");
         }
         if (!newPassword.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$")) {
             throw new IllegalArgumentException("Password must: \n" +
