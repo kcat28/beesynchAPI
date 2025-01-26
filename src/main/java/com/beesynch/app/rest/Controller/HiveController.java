@@ -24,8 +24,7 @@ public class HiveController {
     public ResponseEntity<String> createHive(@RequestBody Hive hive) {
         // Check if hive name exists
         if (hiveRepo.existsByHiveName(hive.getHiveName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Hive with name: " + hive.getHiveName() + " already exists.");
+            return ResponseEntity.badRequest().body("Hive with name: " + hive.getHiveName() + " already exists");
         }
 
         hive.setHive_created_date(new java.sql.Date(System.currentTimeMillis()));

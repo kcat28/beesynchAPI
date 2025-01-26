@@ -123,13 +123,33 @@ import java.util.stream.Collectors;
         }
 
         //01/19/2025 - for calendar view
-        @GetMapping("/tasks-by-end-date")
-        public Map<String, List<String>> getTasksGroupedByEndDate() {
-            return taskService.getTasksGroupedByEndDate();
-        }
+//        @GetMapping("/tasks-by-end-date")
+//        public Map<String, List<String>> getTasksGroupedByEndDate() {
+//            return taskService.getTasksGroupedByEndDate();
+//        }
+
+    @GetMapping("/tasks-by-end-date")
+    public Map<String, List<Map<String, String>>> getTasksGroupedByEndDate() {
+        return taskRepo.findAll().stream()
+                .flatMap(task -> task.getSchedule().stream() // Flatten the schedules
+                        .map(schedule -> Map.entry(
+                                schedule.getEnd_date() != null ? schedule.getEnd_date().toString() : "No End Date",
+                                Map.of(
+                                        "title", task.getTitle(),
+                                        "img_path", task.getImg_path() != null ? task.getImg_path() : "",
+                                        "due_time", schedule.getDue_time() != null ? schedule.getDue_time().toString() : "No Due Time"
+                                )
+                        )))
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey, // Group by end date
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Map values
+                ));
+    }
 
 
-        //for joyce popup
+
+
+    //for joyce popup
     @GetMapping("/get_byId/{taskId}")
     public Optional<TaskDTO> getTaskById(@PathVariable Long taskId) {
         return taskRepo.findById(taskId)

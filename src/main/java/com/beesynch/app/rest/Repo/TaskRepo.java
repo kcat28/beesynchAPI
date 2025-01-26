@@ -15,8 +15,12 @@ public interface TaskRepo extends JpaRepository<Task, Long>{
     List<Task> findUnassignedTasks();
 
     //01/19/2025
-    @Query("SELECT t.title, s.end_date, s.due_time FROM Task t JOIN t.schedule s")
-    List<Object[]> findTaskDetails();
+//    @Query("SELECT t.title, s.end_date, s.due_time FROM Task t JOIN t.schedule s")
+//    List<Object[]> findTaskDetails();
+
+//    @Query("SELECT t.img_path, t.title, s.end_date FROM Task t JOIN t.schedule s")
+//    List<Object[]> findTaskTitlesAndEndDates();
+
 
     @Query("SELECT t FROM Task t JOIN t.assignments ta WHERE ta.user.id = :user_id")
     List<Task> findTasksByUserId(@Param("user_id") Long userId);

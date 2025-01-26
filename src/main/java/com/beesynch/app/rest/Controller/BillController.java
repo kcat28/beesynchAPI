@@ -62,9 +62,27 @@ public class BillController {
         }
     }
 
+//    @GetMapping("/bills-by-end-date")
+//    public Map<String, List<String>> getBillsGroupedByEndDate() {
+//        return billService.getBillsGroupedByEndDate();
+//    }
+
     @GetMapping("/bills-by-end-date")
-    public Map<String, List<String>> getBillsGroupedByEndDate() {
-        return billService.getBillsGroupedByEndDate();
+    public Map<String, List<Map<String, String>>> getBillsGroupedByEndDate() {
+        return billRepo.findAll().stream()
+                .flatMap(bill -> bill.getSchedule().stream() // Flatten the schedules
+                        .map(schedule -> Map.entry(
+                                schedule.getEnd_date() != null ? schedule.getEnd_date().toString() : "No End Date",
+                                Map.of(
+                                        "title", bill.getBill_name(),
+                                        "img_path", bill.getImg_path() != null ? bill.getImg_path() : "",
+                                        "due_time", schedule.getDue_time() != null ? schedule.getDue_time().toString() : "No Due Time"
+                                )
+                        )))
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey, // Group by end date
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Map values
+                ));
     }
 
 
