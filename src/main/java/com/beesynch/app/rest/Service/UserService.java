@@ -84,6 +84,9 @@ public class UserService implements UserDetailsService {
             existingUser.setUser_email(userDetails.getUser_email());
         }
 
+        existingUser.setImg_path(userDetails.getImg_path());
+
+
         // Note: Do not allow user to change their username here unless intended
         // Remove this line if username changes are NOT allowed
         if (userDetails.getUser_name() != null) {

@@ -62,10 +62,6 @@ public class BillController {
         }
     }
 
-//    @GetMapping("/bills-by-end-date")
-//    public Map<String, List<String>> getBillsGroupedByEndDate() {
-//        return billService.getBillsGroupedByEndDate();
-//    }
 
     @GetMapping("/bills-by-end-date")
     public Map<String, List<Map<String, String>>> getBillsGroupedByEndDate() {
