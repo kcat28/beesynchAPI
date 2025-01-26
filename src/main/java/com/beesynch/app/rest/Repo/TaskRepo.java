@@ -14,21 +14,6 @@ public interface TaskRepo extends JpaRepository<Task, Long>{
     @Query("SELECT t FROM Task t LEFT JOIN TaskAssignment ta ON t.id = ta.task.id WHERE ta.user IS NULL")
     List<Task> findUnassignedTasks();
 
-//    @Query(
-//    "SELECT new com.beesynch.app.rest.DTO.TaskCreationRequestDTO(t.title, s.dueTime, s.endDate) " +
-//    "FROM Task t " +
-//    "JOIN Schedule s ON t.id = s.task.id"
-//)
-//    List<TaskCreationRequestDTO> findTaskSchedules();
-
-    //01/19/2025
-//    @Query("SELECT t.title, s.end_date, s.due_time FROM Task t JOIN t.schedule s")
-//    List<Object[]> findTaskDetails();
-
-//    @Query("SELECT t.img_path, t.title, s.end_date FROM Task t JOIN t.schedule s")
-//    List<Object[]> findTaskTitlesAndEndDates();
-
-
     @Query("SELECT t FROM Task t JOIN t.assignments ta WHERE ta.user.id = :user_id")
     List<Task> findTasksByUserId(@Param("user_id") Long userId);
 
