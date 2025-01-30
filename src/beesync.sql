@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jan 22, 2025 at 11:15 AM
+-- Host: localhost
+-- Generation Time: Jan 30, 2025 at 12:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,15 +53,16 @@ INSERT INTO `bills` (`bill_id`, `hive_id`, `bill_name`, `amount`, `description`,
 CREATE TABLE `hive` (
   `hive_id` int(11) NOT NULL,
   `hive_name` varchar(100) NOT NULL,
-  `hive_created_date` date NOT NULL
+  `hive_created_date` date NOT NULL,
+  `img_path` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `hive`
 --
 
-INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`) VALUES
-(1, 'test hive', '2025-01-11');
+INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`, `img_path`) VALUES
+(1, 'test hive', '2025-01-11', NULL);
 
 -- --------------------------------------------------------
 
@@ -105,8 +106,8 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `message`, `notif_created_date`) VALUES
-(65, 169, 1, 'New task Created: Pls cuh', '2025-01-21'),
-(66, 170, NULL, 'New Bill Created: Electricity Bill', '2025-01-22');
+(1, 169, 1, 'New task Created: Pls cuh', '2025-01-21'),
+(2, 170, 2, 'New Bill Created: Electricity Bill', '2025-01-22');
 
 -- --------------------------------------------------------
 

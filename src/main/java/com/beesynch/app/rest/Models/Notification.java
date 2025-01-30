@@ -33,11 +33,11 @@ public class Notification {
         return notification_id;
     }
 
-    public Schedule getSchedule_id() {
+    public Schedule getSchedule() {
         return schedule;
     }
 
-    public User getUser_id() {
+    public User getUser() {
         return user;
     }
 
