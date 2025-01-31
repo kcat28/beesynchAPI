@@ -8,7 +8,7 @@ import java.sql.Date;
 public class Ranking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ranking_id;
 
     @ManyToOne
@@ -19,13 +19,13 @@ public class Ranking {
     @JoinColumn(name = "hive_id", nullable = false)
     private Hive hive_id;
 
-    @Column(nullable = false)
+    @Column()
     private Integer rank_position;
 
-    @Column(nullable = false)
+    @Column()
     private Date period_start;
 
-    @Column(nullable = false)
+    @Column()
     private Date period_end;
 
     // Getters Method

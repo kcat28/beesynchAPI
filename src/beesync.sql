@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 30, 2025 at 12:59 PM
+-- Generation Time: Jan 31, 2025 at 04:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -73,7 +73,7 @@ INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`, `img_path`) VAL
 CREATE TABLE `household_members` (
   `user_id` int(11) NOT NULL,
   `hive_id` int(11) NOT NULL,
-  `ranking_id` int(11) NOT NULL,
+  `ranking_id` int(11) DEFAULT NULL,
   `role` varchar(200) NOT NULL,
   `points` int(11) DEFAULT NULL,
   `achievements` varchar(300) DEFAULT NULL
@@ -84,8 +84,8 @@ CREATE TABLE `household_members` (
 --
 
 INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`) VALUES
-(1, 1, 1, 'Member', 0, 'null'),
-(2, 1, 2, 'member', 100, 'null');
+(1, 1, 6, 'Member', 0, 'null'),
+(2, 1, NULL, 'member', 100, 'null');
 
 -- --------------------------------------------------------
 
@@ -129,8 +129,19 @@ CREATE TABLE `ranking` (
 --
 
 INSERT INTO `ranking` (`ranking_id`, `user_id`, `hive_id`, `rank_position`, `period_start`, `period_end`) VALUES
-(1, 1, 1, 0, NULL, NULL),
-(2, 2, 1, 0, NULL, NULL);
+(6, 1, 1, 1, '2025-01-31', '2025-02-02');
+
+--
+-- Triggers `ranking`
+--
+DELIMITER $$
+CREATE TRIGGER `after_ranking_insert` AFTER INSERT ON `ranking` FOR EACH ROW BEGIN
+    UPDATE household_members 
+    SET ranking_id = NEW.ranking_id 
+    WHERE user_id = NEW.user_id AND ranking_id IS NULL;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -179,7 +190,7 @@ CREATE TABLE `task` (
 --
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
-(135, 'Pls cuh', NULL, 'Task', 'Ongoing', 10, NULL, 'E:/XAMPP/htdocs/uploads/Pls cuh.jpg');
+(135, 'Pls cuh', NULL, 'Task', 'Completed', 10, NULL, 'E:/XAMPP/htdocs/uploads/Pls cuh.jpg');
 
 -- --------------------------------------------------------
 
@@ -322,7 +333,7 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `ranking`
 --
 ALTER TABLE `ranking`
-  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `schedule`
@@ -364,7 +375,7 @@ ALTER TABLE `bills`
 ALTER TABLE `household_members`
   ADD CONSTRAINT `household_members_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   ADD CONSTRAINT `household_members_ibfk_2` FOREIGN KEY (`hive_id`) REFERENCES `hive` (`hive_id`),
-  ADD CONSTRAINT `household_members_ibfk_3` FOREIGN KEY (`ranking_id`) REFERENCES `ranking` (`ranking_id`);
+  ADD CONSTRAINT `household_members_ibfk_3` FOREIGN KEY (`ranking_id`) REFERENCES `ranking` (`ranking_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `notification`

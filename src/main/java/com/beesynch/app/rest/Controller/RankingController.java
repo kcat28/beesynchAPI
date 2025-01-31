@@ -3,6 +3,7 @@ package com.beesynch.app.rest.Controller;
 import com.beesynch.app.rest.DTO.RankingDTO;
 import com.beesynch.app.rest.Models.Ranking;
 import com.beesynch.app.rest.Repo.RankingRepo;
+import com.beesynch.app.rest.Service.RankingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,15 @@ import java.util.stream.Collectors;
 
     @Autowired
     private RankingRepo rankingRepo;
+
+    @Autowired
+    private RankingService rankingService;
+
+    @GetMapping("/updateLeaderboard")
+    public String updateLeaderboard() {
+        rankingService.updateLeaderboardWeekly();
+        return "for manual update (testing only)";
+    }
 
     @GetMapping("/")
     public List<RankingDTO> getWholeGroupRanking(){
@@ -54,8 +64,6 @@ import java.util.stream.Collectors;
         }
     }
 
-
-
     @PostMapping("/createNewRankingData")
     public Ranking createRankData(@RequestBody Ranking RankData){
         return rankingRepo.save(RankData);
@@ -66,5 +74,8 @@ import java.util.stream.Collectors;
         rankingRepo.deleteById(rankId);
         return "deleted ranking with id of: " + rankId;
     }
+
+
+
 
 }
