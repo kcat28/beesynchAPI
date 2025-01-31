@@ -37,7 +37,7 @@ public class RankingService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Scheduled(cron = "0 0 0 * * MON") // update
+    @Scheduled(cron = "0 0 16 * * MON", zone = "Asia/Manila") // update
     public void updateLeaderboardWeekly() {
         deleteLeaderBoard();
         updateLeaderBoard();

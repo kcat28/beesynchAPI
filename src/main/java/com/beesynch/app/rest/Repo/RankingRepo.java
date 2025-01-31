@@ -22,12 +22,4 @@ public interface RankingRepo extends JpaRepository<Ranking, Long>{
             "GROUP BY a.user.id, h.hive")
     List<Object[]> getLeaderboard();
 
-
-//    @Modifying
-//    @Transactional
-//    @Query("UPDATE Ranking r SET r.rank_position = :rank WHERE r.user_id = :userId AND r.hive_id = :hiveId")
-//    int updateRankPosition(@Param("rank") int rank, @Param("userId") User userId, @Param("hiveId") Hive hiveId);
-//
-
-
 }
