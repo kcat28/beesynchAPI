@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -25,7 +26,7 @@ public class UserService implements UserDetailsService {
         return userRepo.findAll();
     }
 
-    private String getLoggedInUsername() {
+    public String getLoggedInUsername() {
         // Retrieve the current authenticated user from the SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -36,14 +37,30 @@ public class UserService implements UserDetailsService {
         return authentication.getName(); // Returns the username (or principal) of the logged-in user
     }
 
+    // generates recovery code for every user signup
+    public String generateRecoveryCode() {
+        // Generate a unique recovery code using UUID
+        return UUID.randomUUID().toString();
+    }
+
     // Create a new user
-    public User saveUser(User user) {
+    public void saveUser(User user) {
+
+        System.out.println("Received user details:");
+        System.out.println("First Name: " + user.getFirst_name());
+        System.out.println("Last Name: " + user.getLast_name());
+        System.out.println("Username: " + user.getUser_name());
+        System.out.println("Email: " + user.getUser_email());
+        System.out.println("Password: " + user.getUser_password()); // Debugging line
+
         if (userRepo.findByUserName(user.getUser_name()) != null) {
             throw new RuntimeException("Username already exists: " + user.getUser_name());
         }
 
+        user.setRecovery_code(generateRecoveryCode());
+
         // Save user
-        return userRepo.save(user);
+        userRepo.save(user);
     }
 
     // Get a user by ID
@@ -56,6 +73,7 @@ public class UserService implements UserDetailsService {
         return userRepo.findByUserName(username);
     }
 
+    // Update a user
     public User updateLoggedInUser(User userDetails) {
         // Retrieve logged-in username
         String username = getLoggedInUsername();

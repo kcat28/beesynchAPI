@@ -29,6 +29,14 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @PostMapping(value = "/save")
+    public String saveUser(@RequestBody User user) {
+
+        userService.saveUser(user);
+//            userRepo.save(user);
+        return "saved...";
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
         try {
@@ -59,26 +67,52 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody UserDTO userDTO) {
+    @PostMapping("/verify-recovery-code")
+    public ResponseEntity<?> verifyRecoveryCode(@RequestBody UserDTO userDTO) {
         try {
-            boolean isChanged = userService.changePassword(
-                    userDTO.getCurrentPassword(),
-                    userDTO.getNewPassword()
-            );
-
-            if (isChanged) {
-                return ResponseEntity.ok("Password changed successfully!");
-            } else {
+            User user = userRepo.findByUserName(userService.getLoggedInUsername());
+            if (user == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Current password is incorrect or new password is invalid.");
+                        .body("User not found.");
             }
 
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            if (!userDTO.getRecovery_code().equals(user.getRecovery_code())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Invalid recovery code.");
+            }
+
+            return ResponseEntity.ok("Recovery code verified successfully!");
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Something went wrong while changing the password.");
+                    .body("Something went wrong while verifying the recovery code.");
         }
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO) {
+        try {
+            User user = userRepo.findByUserName(userService.getLoggedInUsername());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User not found.");
+            }
+
+            if (!userDTO.getNewPassword().matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Password must:\n• Be at least 8 characters long.\n• Contain at least one uppercase and one lowercase letter.\n• Have at least one numeric digit.");
+            }
+
+            user.setUser_password(userDTO.getNewPassword());
+            userRepo.save(user);
+
+            return ResponseEntity.ok("Password reset successfully!");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong while resetting the password.");
+        }
+    }
+
+
 }

@@ -15,6 +15,8 @@ public class UserDTO {
     @Transient
     private String newPassword;
 
+    private String recovery_code;
+
     // Getters and Setters
     public String getUser_name() {
         return user_name;
@@ -31,6 +33,7 @@ public class UserDTO {
     }
 
     public String getCurrentPassword() {return currentPassword;}
+
     public void setCurrentPassword(String currentPassword) {
         this.currentPassword = currentPassword;
     }
@@ -40,6 +43,14 @@ public class UserDTO {
     }
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public String getRecovery_code() {
+        return recovery_code;
+    }
+
+    public void setRecovery_code(String recovery_code) {
+        this.recovery_code = recovery_code;
     }
 }
 

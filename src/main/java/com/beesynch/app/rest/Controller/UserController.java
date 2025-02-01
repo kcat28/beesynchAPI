@@ -50,11 +50,6 @@ import org.springframework.http.ResponseEntity;
             }
         }
 
-        @PostMapping(value = "/save")
-        public String saveUser(@RequestBody User user) {
-            userRepo.save(user);
-            return "saved...";
-        }
 
         // Update a user
         @PutMapping("/profile/edit")
