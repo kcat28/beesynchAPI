@@ -18,6 +18,10 @@ public class MembersTaskListDTO {
         this.img_path = img_path;
     }
 
+    public MembersTaskListDTO() {
+
+    }
+
     // Getters and Setters
     public Long getUserId() {
         return userId;

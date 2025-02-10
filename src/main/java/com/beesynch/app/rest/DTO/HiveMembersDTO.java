@@ -36,6 +36,10 @@ public class HiveMembersDTO {
         this.achievements = achievements;
     }
 
+    public HiveMembersDTO() {
+
+    }
+
     // Getters and Setters
     public Long getUserId() {
         return userId;

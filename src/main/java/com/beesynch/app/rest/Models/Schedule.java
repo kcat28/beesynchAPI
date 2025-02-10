@@ -1,5 +1,6 @@
 package com.beesynch.app.rest.Models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -30,8 +31,11 @@ public class Schedule {
     private Date start_date;
 
     @Column()
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date end_date;
-    private String recurrence; // subject for study
+    @Column()
+    private String recurrence;
+    @Column()
     private Time due_time;
 
     // Getters Method

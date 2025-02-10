@@ -3,6 +3,8 @@
     import com.beesynch.app.rest.Models.Notification;
     import com.beesynch.app.rest.Repo.NotificationRepo;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
     import java.util.List;
@@ -17,9 +19,15 @@
 
         //get notif by notif id // CHECKED JAN 30 2025 - JEP
         @GetMapping("/getbyId/{notifId}")
-        public Optional<Notification> getNotificationById(@PathVariable("notifId") Long notifId){
-            return notificationRepo.findById(notifId);
+        public ResponseEntity<Notification> getNotificationById(@PathVariable("notifId") Long notifId) {
+            Optional<Notification> notification = notificationRepo.findById(notifId);
+            if (notification.isPresent()) {
+                return ResponseEntity.ok(notification.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
         }
+
 
         // get notif by user id // CHECKED JAN 30 2025 - JEP
         @GetMapping("/getbyUser/{user_id}")

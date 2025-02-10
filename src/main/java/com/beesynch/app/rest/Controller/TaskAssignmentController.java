@@ -3,6 +3,8 @@ package com.beesynch.app.rest.Controller;
 import com.beesynch.app.rest.Models.TaskAssignment;
 import com.beesynch.app.rest.Repo.TaskAssignmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +23,18 @@ import java.util.List;
         return taskAssignmentRepo.findByUserId(userId);
     }
 
-    //update? not sure pa
-
     // UNASSIGN a task (delete task assignment entry)
     @DeleteMapping("/{assignmentId}")
-    public String unassignTask(@PathVariable Long assignmentId) {
+    public ResponseEntity<String> unassignTask(@PathVariable Long assignmentId) {
+        if (!taskAssignmentRepo.existsById(assignmentId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Assignment ID not found");
+        }
         taskAssignmentRepo.deleteById(assignmentId);
-        return "Task unassigned with assignment ID: " + assignmentId;
+        return ResponseEntity.ok("Task unassigned with assignment ID: " + assignmentId);
     }
+
+
+
 
 }

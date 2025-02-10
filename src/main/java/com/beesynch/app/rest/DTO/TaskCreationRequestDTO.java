@@ -39,5 +39,29 @@ public class TaskCreationRequestDTO {
         return assignments;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    public void setTask_status(String task_status) {
+        this.task_status = task_status;
+    }
+    public void setRewardpts(Integer rewardpts) {
+        this.rewardpts = rewardpts;
+    }
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
+    }
+    public void setSchedules(List<ScheduleDTO> schedules) {
+        this.schedules = schedules;
+    }
+    public void setAssignments(List<TaskAssignmentDTO> assignments) {
+        this.assignments = assignments;
+    }
 
 }

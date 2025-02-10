@@ -2,8 +2,6 @@ package com.beesynch.app.rest.Controller;
 import com.beesynch.app.rest.DTO.BillDTO;
 import com.beesynch.app.rest.DTO.ScheduleDTO;
 import com.beesynch.app.rest.Models.Bill;
-import com.beesynch.app.rest.Models.Hive;
-import com.beesynch.app.rest.Models.Task;
 import com.beesynch.app.rest.Repo.BillRepo;
 import com.beesynch.app.rest.Service.BillService;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,14 +32,12 @@ public class BillController {
     public ResponseEntity<?> createBill (@RequestBody BillDTO request){
         System.out.println("Received Schedule: " + request.getSchedules());
 
-        if (request.getSchedules() != null) {
+        if (request.getSchedules() == null || request.getSchedules().isEmpty()) {
+            return ResponseEntity.badRequest().body("Error: schedules must not be empty.");
+        }
+
             for(ScheduleDTO schedule : request.getSchedules() ){
                 System.out.println("Due Time: " + schedule.getDueTime());
-
-                // Normal Validation
-                if (request.getSchedules() == null || request.getSchedules().isEmpty()) {
-                    return ResponseEntity.badRequest().body("Error: schedules must not be empty.");
-                }
 
                 if (schedule.getDueTime() == null) {
                     return ResponseEntity.badRequest().body("Error: due_time must not be null in the schedule.");
@@ -53,7 +47,7 @@ public class BillController {
                     return ResponseEntity.badRequest().body("Error: startDate is required in schedule.");
                 }
             }
-        }
+
         try {
             Bill bill = billService.createFullTask(request);
             return ResponseEntity.ok(bill);

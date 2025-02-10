@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
         @Autowired
         private TaskService taskService;
 
-        // CREATE a new task (unassigned)
+        // CREATE a new task
         @PostMapping("/createFullTask") // done
         public ResponseEntity<?> createFullTask(@RequestBody TaskCreationRequestDTO request) {
             System.out.println("Assignments in request: " + request.getAssignments());
@@ -43,24 +43,23 @@ import java.util.stream.Collectors;
                     System.out.println("Assignment: " + assignment);
                 }
             }
-            if (request.getSchedules() != null) {
+            if (request.getSchedules() == null || request.getSchedules().isEmpty()) {
+                return ResponseEntity.badRequest().body("Error: schedules must not be empty.");
+            }
+            System.out.println("Received Schedule: " + request.getSchedules());
                 for(ScheduleDTO schedule : request.getSchedules() ){
                     System.out.println("Due Time: " + schedule.getDueTime());
 
                     // Normal Validation
-                    if (request.getSchedules() == null || request.getSchedules().isEmpty()) {
-                        return ResponseEntity.badRequest().body("Error: schedules must not be empty.");
-                    }
-
                     if (schedule.getDueTime() == null) {
                         return ResponseEntity.badRequest().body("Error: due_time must not be null in the schedule.");
                     }
 
-                    if (schedule.getStartDate() == null ) { // removed: || schedule.getEndDate() == null
+                    if (schedule.getStartDate() == null) {
                         return ResponseEntity.badRequest().body("Error: startDate is required in schedule.");
                     }
                 }
-            }
+
 
             try {
                 Task task = taskService.createFullTask(request);

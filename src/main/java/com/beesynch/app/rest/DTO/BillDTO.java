@@ -54,6 +54,9 @@ public class BillDTO {
         return schedules;
     }
 
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
+    }
     public String getImg_path() {
         return img_path;
     }

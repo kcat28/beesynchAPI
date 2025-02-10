@@ -2,6 +2,8 @@ package com.beesynch.app.rest.DTO;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import com.beesynch.app.rest.Models.Bill;
 import com.beesynch.app.rest.Models.User;
@@ -39,6 +41,13 @@ public class ScheduleDTO {
         this.task = task;
         this.start_date = start_date;
         this.end_date = end_date;
+    }
+
+    public ScheduleDTO(LocalTime of, LocalDate of1, LocalDate of2, String daily) {
+    this.start_date = Date.valueOf(of1);
+    this.end_date = Date.valueOf(of2);
+    this.due_time = Time.valueOf(daily);
+    this.recurrence = daily;
     }
 
 

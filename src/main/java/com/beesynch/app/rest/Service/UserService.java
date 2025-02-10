@@ -45,7 +45,6 @@ public class UserService implements UserDetailsService {
 
     // Create a new user
     public void saveUser(User user) {
-
         System.out.println("Received user details:");
         System.out.println("First Name: " + user.getFirst_name());
         System.out.println("Last Name: " + user.getLast_name());

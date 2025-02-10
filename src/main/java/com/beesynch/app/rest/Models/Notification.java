@@ -54,6 +54,9 @@ public class Notification {
     public void setSchedule_id(Schedule schedule) {
         this.schedule = schedule;
     }
+    public void setId(Long id) {
+        this.notification_id = id;
+    }
 
     public void setUser_id(User user) {
         this.user = user;

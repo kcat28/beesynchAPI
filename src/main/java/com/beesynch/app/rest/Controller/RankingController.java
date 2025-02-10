@@ -5,6 +5,7 @@ import com.beesynch.app.rest.Models.Ranking;
 import com.beesynch.app.rest.Repo.RankingRepo;
 import com.beesynch.app.rest.Service.RankingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,14 +45,11 @@ import java.util.stream.Collectors;
     }
 
     @GetMapping("/getbyUserId/{user_id}")
-    public RankingDTO getUserRanking(@PathVariable Long user_id){
-        // find ranking by user_id
+    public ResponseEntity<RankingDTO> getUserRanking(@PathVariable Long user_id) {
         Optional<Ranking> rankingOptional = rankingRepo.findById(user_id);
-
         if (rankingOptional.isPresent()) {
             Ranking ranking = rankingOptional.get();
-
-            return new RankingDTO(
+            RankingDTO rankingDTO = new RankingDTO(
                     ranking.getRanking_id(),
                     ranking.getUser_id().getId(),
                     ranking.getHive_id().getHive_id(),
@@ -59,10 +57,12 @@ import java.util.stream.Collectors;
                     ranking.getPeriod_start(),
                     ranking.getPeriod_end()
             );
+            return ResponseEntity.ok(rankingDTO);
         } else {
-            return null;
+            return ResponseEntity.notFound().build(); // Return 404 if not found
         }
     }
+
 
     @PostMapping("/createNewRankingData")
     public Ranking createRankData(@RequestBody Ranking RankData){

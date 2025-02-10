@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskAssignmentDTO {
@@ -11,6 +12,11 @@ public class TaskAssignmentDTO {
     private Long user_id; // ID of the user to assign the task to
     @JsonProperty("assignedDate")
     private Date assignedDate;
+
+    public TaskAssignmentDTO(long l, LocalDate now) {
+        this.user_id = l;
+        this.assignedDate = Date.valueOf(now);
+    }
 
     // Getters and setters
     public Long getId() {
