@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.Principal;
 
 import java.util.Map;
 
@@ -29,6 +32,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping(value = "/save")
     public String saveUser(@RequestBody User user) {
 
@@ -45,7 +51,7 @@ public class AuthController {
             User user = userRepo.findByUserName(userDTO.getUser_name()); // Find user by username
 
             // Validate the retrieved user and its password
-            if (user == null || !user.getUser_password().equals(userDTO.getUser_password())) {
+            if (user == null || !passwordEncoder.matches(userDTO.getUser_password(), user.getUser_password())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
             }
 
@@ -89,6 +95,7 @@ public class AuthController {
         }
     }
 
+    // NEW: implemented password encoder
     @PostMapping("/change-password")
     public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO) {
         try {
@@ -103,7 +110,7 @@ public class AuthController {
                         .body("Password must:\n• Be at least 8 characters long.\n• Contain at least one uppercase and one lowercase letter.\n• Have at least one numeric digit.");
             }
 
-            user.setUser_password(userDTO.getNewPassword());
+            user.setUser_password(passwordEncoder.encode(userDTO.getNewPassword())); // Encode the password
             userRepo.save(user);
 
             return ResponseEntity.ok("Password reset successfully!");
@@ -114,5 +121,25 @@ public class AuthController {
         }
     }
 
+    // NEW: for password verifying purposes to see recovery code
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestBody Map<String, String> request, Principal principal) {
+        try {
+            String enteredPassword = request.get("password");
+            User user = userRepo.findByUserName(principal.getName());
+
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found.");
+            }
+
+            if (userService.verifyPassword(enteredPassword, user.getUser_password())) {
+                return ResponseEntity.ok("Password verified successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong while verifying the password.");
+        }
+    }
 
 }
