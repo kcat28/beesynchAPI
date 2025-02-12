@@ -26,7 +26,7 @@ import jakarta.persistence.*;
         private String user_email;
 
         @Column(nullable = false, unique = true)
-        @JsonIgnore
+//        @JsonIgnore
         private String user_password;
 
         @Column
