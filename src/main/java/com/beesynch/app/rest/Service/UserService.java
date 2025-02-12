@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Get all users
     public List<User> getAllUsers() {
@@ -43,6 +47,11 @@ public class UserService implements UserDetailsService {
         return UUID.randomUUID().toString();
     }
 
+    // NEW: for user profile verification of encrypted password entered to see recovery code
+    public boolean verifyPassword(String enteredPassword, String storedHashedPassword) {
+        return passwordEncoder.matches(enteredPassword, storedHashedPassword);
+    }
+
     // Create a new user
     public void saveUser(User user) {
         System.out.println("Received user details:");
@@ -55,6 +64,9 @@ public class UserService implements UserDetailsService {
         if (userRepo.findByUserName(user.getUser_name()) != null) {
             throw new RuntimeException("Username already exists: " + user.getUser_name());
         }
+
+        user.setUser_password(passwordEncoder.encode(user.getUser_password())); // Hash the password
+
 
         user.setRecovery_code(generateRecoveryCode());
 
@@ -119,25 +131,7 @@ public class UserService implements UserDetailsService {
         return userRepo.save(existingUser);
     }
 
-    // Change/update password
-    public boolean changePassword(String currentPassword, String newPassword) {
-        String username = getLoggedInUsername();
-        User user = userRepo.findByUserName(username);
 
-        if (user == null || !currentPassword.equals(user.getUser_password())) {
-            throw new IllegalArgumentException("Current password is incorrect.");
-        }
-        if (!newPassword.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$")) {
-            throw new IllegalArgumentException("Password must: \n" +
-                    "• Be at least 8 characters long. \n" +
-                    "• Contain at least one uppercase and one lowercase letter. \n" +
-                    "• Have at least one numeric digit.");
-        }
-
-        user.setUser_password(newPassword);
-        userRepo.save(user);
-        return true;
-    }
 
     // Delete a user
     public void deleteUser(Long id) {
