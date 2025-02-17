@@ -135,9 +135,6 @@ import java.util.stream.Collectors;
                                 schedule.getEnd_date() != null ? schedule.getEnd_date().toString() : "No End Date",
                                 Map.of(
                                         "title", task.getTitle(),
-                                        "description", task.getDescription(),
-                                        "category", task.getCategory(),
-                                        "task_status", task.getTask_status(),
                                         "img_path", task.getImg_path() != null ? task.getImg_path() : "",
                                         "due_time", schedule.getDue_time() != null ? schedule.getDue_time().toString() : "No Due Time"
                                 )
