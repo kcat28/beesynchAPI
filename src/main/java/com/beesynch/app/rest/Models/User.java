@@ -35,7 +35,11 @@ import jakarta.persistence.*;
         @Column
         private String recovery_code;
 
-        //Getter methods
+        @Column(nullable = false)
+        private Boolean is_admin = false;
+
+
+    //Getter methods
         public long getId(){return id; }
         public String getFirst_name(){return first_name; }
         public String getLast_name(){return last_name; }
@@ -44,6 +48,7 @@ import jakarta.persistence.*;
         public String getUser_password(){return user_password;}
         public String getImg_path(){return img_path;}
         public String getRecovery_code() {return recovery_code;}
+        public Boolean getIsAdmin() {return is_admin;}
 
         // Setter methods
         public void setId(long id) {this.id = id; }
@@ -54,6 +59,7 @@ import jakarta.persistence.*;
         public void setUser_password(String user_password) {this.user_password = user_password;}
         public void setImg_path(String img_path) {this.img_path = img_path;}
         public void setRecovery_code(String recovery_code) {this.recovery_code = recovery_code;}
+        public void setIsAdmin(Boolean isAdmin) {this.is_admin = isAdmin;}
 }
 
 

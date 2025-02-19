@@ -39,7 +39,6 @@ public class AuthController {
     public String saveUser(@RequestBody User user) {
 
         userService.saveUser(user);
-//            userRepo.save(user);
         return "saved...";
     }
 
