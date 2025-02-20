@@ -121,11 +121,6 @@ import java.util.stream.Collectors;
 
         }
 
-        //01/19/2025 - for calendar view
-//        @GetMapping("/tasks-by-end-date")
-//        public Map<String, List<String>> getTasksGroupedByEndDate() {
-//            return taskService.getTasksGroupedByEndDate();
-//        }
 
     @GetMapping("/tasks-by-end-date")
     public Map<String, List<Map<String, String>>> getTasksGroupedByEndDate() {
@@ -144,8 +139,6 @@ import java.util.stream.Collectors;
                         Collectors.mapping(Map.Entry::getValue, Collectors.toList()) // Map values
                 ));
     }
-
-
 
 
     //for joyce popup
@@ -193,19 +186,16 @@ import java.util.stream.Collectors;
                 .collect(Collectors.toList());
     }
 
-
-    //UPDATE (task fields)
-//        @PutMapping("/{taskId}")
-//        public Task updateTask(@PathVariable Long taskId, @RequestBody Task taskDetails) {
-//            Task task = taskRepo.findById(taskId)
-//                    .orElseThrow(() -> new RuntimeException("Task not found."));
-//            task.setTitle(taskDetails.getTitle());
-//            task.setDescription(taskDetails.getDescription());
-//            task.setCategory(taskDetails.getCategory());
-//            task.setTask_status(taskDetails.getTask_status());
-//            return taskRepo.save(task);
-//        }
-
+    // update task
+        @PutMapping("/updateTask")
+        public ResponseEntity <?> ediTask(@RequestBody TaskCreationRequestDTO request) {
+            try {
+                Task task = taskService.editTask(request);
+                return ResponseEntity.ok(task);
+            } catch (RuntimeException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
 
 
     //Delete a task

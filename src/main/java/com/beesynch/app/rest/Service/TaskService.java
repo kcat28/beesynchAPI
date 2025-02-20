@@ -119,6 +119,60 @@ public class TaskService {
             throw new RuntimeException("Error creating the task: " + e.getMessage());
         }
     }
+
+    public Task editTask(TaskCreationRequestDTO taskCreationRequestEdit) {
+        // step 1 fetch requested task
+        Task existingTask = taskRepo.findById(taskCreationRequestEdit.getTask_id())
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskCreationRequestEdit.getTask_id()));
+
+        // step 2 update task fields
+        existingTask.setTitle(taskCreationRequestEdit.getTitle());
+        existingTask.setDescription(taskCreationRequestEdit.getDescription());
+        existingTask.setCategory(taskCreationRequestEdit.getCategory());
+        existingTask.setTask_status(taskCreationRequestEdit.getTask_status());
+        existingTask.setRewardpts(taskCreationRequestEdit.getRewardpts());
+        if(taskCreationRequestEdit.getImg_path() != null){
+            existingTask.setImg_path(taskCreationRequestEdit.getImg_path());
+        }
+        Task updatedTask = taskRepo.save(existingTask);
+
+        // Step 3 update task schedules if available
+        if (taskCreationRequestEdit.getSchedules() != null && !taskCreationRequestEdit.getSchedules().isEmpty()) {
+            scheduleRepo.deleteByTaskId(updatedTask.getId()); // remove old schedules
+            for (ScheduleDTO scheduleDTO : taskCreationRequestEdit.getSchedules()) {
+                Schedule schedule = new Schedule();
+                schedule.setTask(updatedTask);
+                schedule.setStart_date(scheduleDTO.getStartDate());
+                schedule.setEnd_date(scheduleDTO.getEndDate());
+                schedule.setRecurrence(scheduleDTO.getRecurrence());
+                schedule.setDue_time(scheduleDTO.getDueTime());
+
+                User user = scheduleDTO.getUser_id() != null ?
+                        userRepo.findById(scheduleDTO.getUser_id()).orElse(null) : null;
+                schedule.setUser_id(user);
+
+                scheduleRepo.save(schedule);
+            }
+        }
+
+        // step 4 update task assignments if provided
+        if (taskCreationRequestEdit.getAssignments() != null && !taskCreationRequestEdit.getAssignments().isEmpty()) {
+            taskAssignmentRepo.deleteByTaskId(updatedTask.getId()); // remove old assignments
+            for (TaskAssignmentDTO assignmentDTO : taskCreationRequestEdit.getAssignments()) {
+                User user = assignmentDTO.getId() != null ?
+                        userRepo.findById(assignmentDTO.getId()).orElse(null) : null;
+
+                TaskAssignment assignment = new TaskAssignment();
+                assignment.setTask(updatedTask);
+                assignment.setUser(user);
+                assignment.setAssignedDate(assignmentDTO.getAssignedDate());
+                taskAssignmentRepo.save(assignment);
+            }
+        }
+
+        return updatedTask;
+    }
+
 }
 
 

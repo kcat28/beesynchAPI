@@ -6,6 +6,7 @@ import java.util.List;
 
 public class BillDTO {
 
+    private Long bill_id;
     private Long hive_id;
     private String bill_name;
     private Double amount;
@@ -60,4 +61,11 @@ public class BillDTO {
     public String getImg_path() {
         return img_path;
     }
+    public Long getBill_id() {
+        return bill_id;
+    }
+    public void setBill_id(Long id) {
+        this.bill_id = id;
+    }
+
 }

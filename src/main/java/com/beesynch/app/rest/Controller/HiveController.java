@@ -20,7 +20,7 @@ public class HiveController {
     @Autowired
     private HiveService hiveService;
 
-    @GetMapping//done
+    @GetMapping("/getAllHives")//done
     public List<Hive> getAllHives() {
         return hiveRepo.findAll();
     }
@@ -36,10 +36,21 @@ public class HiveController {
         }
     }
 
-    @DeleteMapping()//done
+    @DeleteMapping("deleteHive")//done
     public ResponseEntity<String> deleteHive(@RequestParam Long hiveId) {
         hiveRepo.deleteById(hiveId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Hive deleted with ID: " + hiveId);
+    }
+
+    //edit hive
+    @PutMapping("/updateHive")
+    public ResponseEntity<?> updateHive(@RequestBody HiveDTO hiveRequest) {
+        try{
+            Hive hive = hiveService.updateHive(hiveRequest);
+            return ResponseEntity.ok(hive);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

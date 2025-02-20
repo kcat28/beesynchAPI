@@ -1,8 +1,8 @@
 package com.beesynch.app.rest.DTO;
-import com.beesynch.app.rest.Models.Notification;
 
 import java.util.List;
 public class TaskCreationRequestDTO {
+    private Long task_id;
     private String title;
     private String description;
     private String category;
@@ -62,6 +62,9 @@ public class TaskCreationRequestDTO {
     }
     public void setAssignments(List<TaskAssignmentDTO> assignments) {
         this.assignments = assignments;
+    }
+    public Long getTask_id() {
+        return task_id;
     }
 
 }

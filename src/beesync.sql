@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 01, 2025 at 07:23 PM
+-- Host: localhost
+-- Generation Time: Feb 19, 2025 at 10:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,8 @@ CREATE TABLE `bills` (
 --
 
 INSERT INTO `bills` (`bill_id`, `hive_id`, `bill_name`, `amount`, `description`, `bill_status`, `img_path`) VALUES
-(12, 1, 'Electricity Bill', 250.75, 'Monthly electricity bill for the hive', 'Pending', '/images/electricity_bill.jpg');
+(12, 1, 'Electricity Bill', 250.75, 'Monthly electricity bill for the hive', 'Pending', '/images/electricity_bill.jpg'),
+(13, 1, 'Electricity Bill', 250.75, 'Monthly electricity bill for the hive', 'Pending', '/images/electricity_bill.jpg');
 
 -- --------------------------------------------------------
 
@@ -62,7 +63,8 @@ CREATE TABLE `hive` (
 --
 
 INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`, `img_path`) VALUES
-(1, 'test hive', '2025-01-11', NULL);
+(1, 'test hive', '2025-01-11', NULL),
+(3, 'Main Hive', '2025-02-19', NULL);
 
 -- --------------------------------------------------------
 
@@ -107,7 +109,11 @@ CREATE TABLE `notification` (
 
 INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `message`, `notif_created_date`) VALUES
 (1, 169, 1, 'New task Created: Pls cuh', '2025-01-21'),
-(2, 170, 2, 'New Bill Created: Electricity Bill', '2025-01-22');
+(2, 170, 2, 'New Bill Created: Electricity Bill', '2025-01-22'),
+(67, 171, 1, 'New task Created: checking for sched', '2025-02-10'),
+(68, 172, 1, 'New task Created: checking for sched', '2025-02-13'),
+(69, 173, NULL, 'New Bill Created: Electricity Bill', '2025-02-13'),
+(70, 174, 1, 'New task Created: checking for sched', '2025-02-13');
 
 -- --------------------------------------------------------
 
@@ -166,7 +172,11 @@ CREATE TABLE `schedule` (
 
 INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_date`, `end_date`, `recurrence`, `due_time`) VALUES
 (169, 135, NULL, 1, '2025-01-20', '2025-01-20', 'Once', '09:25:25'),
-(170, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00');
+(170, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
+(171, 136, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
+(172, 137, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
+(173, NULL, 13, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
+(174, 138, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00');
 
 -- --------------------------------------------------------
 
@@ -190,7 +200,10 @@ CREATE TABLE `task` (
 --
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
-(135, 'Pls cuh', NULL, 'Task', 'Completed', 10, NULL, 'E:/XAMPP/htdocs/uploads/Pls cuh.jpg');
+(135, 'Pls cuh', 'asdasdasdas', 'Task', 'Completed', 10, NULL, 'E:/XAMPP/htdocs/uploads/Pls cuh.jpg'),
+(136, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
+(137, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
+(138, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas');
 
 -- --------------------------------------------------------
 
@@ -210,7 +223,13 @@ CREATE TABLE `task_assignment` (
 --
 
 INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALUES
-(176, 135, 1, '2025-01-20');
+(176, 135, 1, '2025-01-20'),
+(177, 136, 1, '2024-02-10'),
+(178, 136, 2, '2024-02-10'),
+(179, 137, 1, '2024-02-10'),
+(180, 137, 2, '2024-02-10'),
+(181, 138, 1, '2024-02-10'),
+(182, 138, 2, '2024-02-10');
 
 -- --------------------------------------------------------
 
@@ -226,18 +245,20 @@ CREATE TABLE `users` (
   `user_email` varchar(100) NOT NULL,
   `user_password` varchar(200) NOT NULL,
   `img_path` varchar(300) DEFAULT NULL,
-  `recovery_code` varchar(255) NOT NULL
+  `recovery_code` varchar(255) NOT NULL,
+  `is_admin` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `user_name`, `user_email`, `user_password`, `img_path`, `recovery_code`) VALUES
-(1, 'John Efren', 'Gannaban', 'kcat28', 'jefjef1412@gmail.com', '12345', NULL, ''),
-(2, 'Diana Nicole', 'Danga', 'dangsyana', 'dndanga37@gmail.com', '5555', NULL, ''),
-(7, 'Jascent Pearl', 'Navarro', 'Jassy', 'jassy@gmail.com', '1234', 'test.jpgasdas', ''),
-(8, 'Allen', 'Siaton', 'allen', 'allen@gmail.com', 'allen', '', '1c478592-873c-4164-8040-dfe1de7e4b5c');
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `user_name`, `user_email`, `user_password`, `img_path`, `recovery_code`, `is_admin`) VALUES
+(1, 'John Efren', 'Gannaban', 'kcat28', 'jefjef1412@gmail.com', '12345', NULL, '', 1),
+(2, 'Diana Nicole', 'Danga', 'dangsyana', 'dndanga37@gmail.com', '5555', NULL, '', 1),
+(7, 'Jascent Pearl', 'Navarro', 'Jassy', 'jassy@gmail.com', '1234', 'test.jpgasdas', '', 1),
+(8, 'Joyce Anne', 'Colocado', 'joyce', 'joyce@gmail.com', '1234', '', '1c478592-873c-4164-8040-dfe1de7e4b5c', 1),
+(9, 'Keeper', 'Cat', 'Kcat28', 'keeper@gmail.com', '$2a$10$evPDXfAlHyGRkipgu2roZuXvFeS8BnKhYdki.9/XzF69RJoySyMv6', 'sampsop', 'af582595-387b-4db0-b730-42c92cc80ed9', 1);
 
 --
 -- Indexes for dumped tables
@@ -317,19 +338,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bills`
 --
 ALTER TABLE `bills`
-  MODIFY `bill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `bill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `hive`
 --
 ALTER TABLE `hive`
-  MODIFY `hive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `hive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `ranking`
@@ -341,25 +362,25 @@ ALTER TABLE `ranking`
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
 
 --
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
 
 --
 -- AUTO_INCREMENT for table `task_assignment`
 --
 ALTER TABLE `task_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

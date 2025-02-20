@@ -54,4 +54,18 @@ public class HiveService {
 //    public Hive deletHive (HiveDTO hiveDTO) {
 //
 //    }
+
+    public Hive updateHive(HiveDTO hiveDTO) {
+        //step 1 fetch hive by id
+        Hive existingHive = hiveRepo.findById(hiveDTO.getHiveId())
+                .orElseThrow(() -> new RuntimeException("Hive not found with ID " + hiveDTO.getHiveId()));
+
+        existingHive.setHiveName(hiveDTO.getHiveName());
+        if(hiveDTO.getImg_path() != null){
+            existingHive.setImg_path(hiveDTO.getImg_path());
+        }
+
+        return hiveRepo.save(existingHive);
+
+    }
 }

@@ -75,6 +75,16 @@ public class BillController {
                 ));
     }
 
+    //update bill
+    @PutMapping("/updateBill")
+    public ResponseEntity<?> updateBill(@RequestBody BillDTO request){
+        try{
+            Bill bill = billService.editBill(request);
+            return ResponseEntity.ok(bill);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping("/getAllBills")
     public List<Bill> getAllBills(){

@@ -4,10 +4,7 @@ package com.beesynch.app.rest.Service;
 import com.beesynch.app.rest.DTO.BillDTO;
 import com.beesynch.app.rest.DTO.ScheduleDTO;
 import com.beesynch.app.rest.Models.*;
-import com.beesynch.app.rest.Repo.BillRepo;
-import com.beesynch.app.rest.Repo.HiveRepo;
-import com.beesynch.app.rest.Repo.NotificationRepo;
-import com.beesynch.app.rest.Repo.ScheduleRepo;
+import com.beesynch.app.rest.Repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +31,8 @@ public class BillService {
 
     @Autowired
     private NotificationRepo notificationRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     public Bill createFullTask(BillDTO billCreationRequest) {
 
@@ -86,5 +86,48 @@ public class BillService {
             e.printStackTrace();
             throw new RuntimeException("Error creating the task: " + e.getMessage());
         }
+    }
+
+    public Bill editBill(BillDTO billUpdateRequest) {
+        // step 1 fetch existing bill by id
+        Bill existingBill = billRepo.findById(billUpdateRequest.getBill_id())
+                .orElseThrow(() -> new RuntimeException("Bill not found with ID: " + billUpdateRequest.getBill_id()));
+
+        Optional<Hive> hive = hiveRepo.findById(billUpdateRequest.getHive_id());
+        //step 2 update fetched bill
+
+        existingBill.setBill_name(billUpdateRequest.getBill_name());
+        if (hive.isPresent()) {
+            existingBill.setHive_id(hive.get());
+        } else {
+            throw new RuntimeException("Hive not found with ID: " + billUpdateRequest.getHive_id());
+        }
+        existingBill.setBill_amount(billUpdateRequest.getAmount());
+        existingBill.setDescription(billUpdateRequest.getDescription());
+        existingBill.setBill_status(billUpdateRequest.getBill_status());
+        if(billUpdateRequest.getImg_path() != null) {
+            existingBill.setImg_path(billUpdateRequest.getImg_path());
+        }
+        Bill savedBill = billRepo.save(existingBill);
+
+        //step 3 update schedule if available
+        if(billUpdateRequest.getSchedules() != null && !billUpdateRequest.getSchedules().isEmpty()) {
+            scheduleRepo.deleteByTaskIdbill(savedBill.getBill_id()); //remove old schedules
+            for(ScheduleDTO scheduleDTO : billUpdateRequest.getSchedules()) {
+                Schedule schedule = new Schedule();
+                schedule.setBill_id(savedBill);
+                schedule.setStart_date(scheduleDTO.getStartDate());
+                schedule.setEnd_date(scheduleDTO.getEndDate());
+                schedule.setRecurrence(scheduleDTO.getRecurrence());
+                schedule.setDue_time(scheduleDTO.getDueTime());
+
+                User user = scheduleDTO.getUser_id() != null ?
+                        userRepo.findById(scheduleDTO.getUser_id()).orElse(null) : null;
+                schedule.setUser_id(user);
+
+                scheduleRepo.save(schedule);
+            }
+        }
+        return savedBill;
     }
 }
