@@ -171,6 +171,7 @@ import java.util.stream.Collectors;
         return taskRepo.findTasksByUserId(user_id).stream()
                 .map(Task -> {
                     Map<String, Object> taskMap = new HashMap<>();
+                    taskMap.put("id", Task.getId());
                     taskMap.put("title", Task.getTitle());
                     taskMap.put("description", Task.getDescription());
                     taskMap.put("category", Task.getCategory());

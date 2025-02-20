@@ -5,8 +5,10 @@ import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.HiveMemberId;
 import com.beesynch.app.rest.Models.HiveMembers;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +32,14 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
             "FROM HiveMembers hm " +
             "JOIN User u ON hm.id.userId = u.id ") // reference to userId in the composite key
     List<MembersTaskListDTO> getMembersTaskListInfo();
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM HiveMembers hm WHERE hm.user.id = :userId")
+    void deleteHiveMember(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(hm) > 0 FROM HiveMembers hm WHERE hm.user.id = :userId")
+    boolean existsByUserId(@Param("userId") Long userId);
 
 
 

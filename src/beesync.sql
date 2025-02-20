@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 19, 2025 at 10:33 AM
+-- Generation Time: Feb 20, 2025 at 09:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `bills` (
 --
 
 INSERT INTO `bills` (`bill_id`, `hive_id`, `bill_name`, `amount`, `description`, `bill_status`, `img_path`) VALUES
-(12, 1, 'Electricity Bill', 250.75, 'Monthly electricity bill for the hive', 'Pending', '/images/electricity_bill.jpg'),
+(12, 3, 'water Bill', 232.75, 'Monthly water bill for the hive', 'Ongoing', '/images/water_bill.jpg'),
 (13, 1, 'Electricity Bill', 250.75, 'Monthly electricity bill for the hive', 'Pending', '/images/electricity_bill.jpg');
 
 -- --------------------------------------------------------
@@ -63,7 +63,7 @@ CREATE TABLE `hive` (
 --
 
 INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`, `img_path`) VALUES
-(1, 'test hive', '2025-01-11', NULL),
+(1, 'mojojo', '2025-01-11', '1234WACK.jpg'),
 (3, 'Main Hive', '2025-02-19', NULL);
 
 -- --------------------------------------------------------
@@ -86,7 +86,6 @@ CREATE TABLE `household_members` (
 --
 
 INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`) VALUES
-(1, 1, 6, 'Member', 0, 'null'),
 (2, 1, NULL, 'member', 100, 'null');
 
 -- --------------------------------------------------------
@@ -108,12 +107,9 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `message`, `notif_created_date`) VALUES
-(1, 169, 1, 'New task Created: Pls cuh', '2025-01-21'),
-(2, 170, 2, 'New Bill Created: Electricity Bill', '2025-01-22'),
 (67, 171, 1, 'New task Created: checking for sched', '2025-02-10'),
 (68, 172, 1, 'New task Created: checking for sched', '2025-02-13'),
-(69, 173, NULL, 'New Bill Created: Electricity Bill', '2025-02-13'),
-(70, 174, 1, 'New task Created: checking for sched', '2025-02-13');
+(69, 173, NULL, 'New Bill Created: Electricity Bill', '2025-02-13');
 
 -- --------------------------------------------------------
 
@@ -171,12 +167,11 @@ CREATE TABLE `schedule` (
 --
 
 INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_date`, `end_date`, `recurrence`, `due_time`) VALUES
-(169, 135, NULL, 1, '2025-01-20', '2025-01-20', 'Once', '09:25:25'),
-(170, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
 (171, 136, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
 (172, 137, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
 (173, NULL, 13, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
-(174, 138, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00');
+(179, 135, NULL, 2, '2024-02-10', '2024-02-17', 'Daily', '23:00:00'),
+(192, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00');
 
 -- --------------------------------------------------------
 
@@ -200,7 +195,7 @@ CREATE TABLE `task` (
 --
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
-(135, 'Pls cuh', 'asdasdasdas', 'Task', 'Completed', 10, NULL, 'E:/XAMPP/htdocs/uploads/Pls cuh.jpg'),
+(135, 'sampleeditwithsched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
 (136, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
 (137, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
 (138, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas');
@@ -229,7 +224,9 @@ INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALU
 (179, 137, 1, '2024-02-10'),
 (180, 137, 2, '2024-02-10'),
 (181, 138, 1, '2024-02-10'),
-(182, 138, 2, '2024-02-10');
+(182, 138, 2, '2024-02-10'),
+(183, 135, 2, '2024-02-10'),
+(184, 135, 2, '2024-02-10');
 
 -- --------------------------------------------------------
 
@@ -362,7 +359,7 @@ ALTER TABLE `ranking`
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
 
 --
 -- AUTO_INCREMENT for table `task`
@@ -374,7 +371,7 @@ ALTER TABLE `task`
 -- AUTO_INCREMENT for table `task_assignment`
 --
 ALTER TABLE `task_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
 
 --
 -- AUTO_INCREMENT for table `users`
