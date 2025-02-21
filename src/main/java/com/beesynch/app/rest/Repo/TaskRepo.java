@@ -24,5 +24,9 @@ public interface TaskRepo extends JpaRepository<Task, Long>{
     @Query("DELETE FROM Task t WHERE t.task_status = :status")
     Integer flushTaskByStatus(@Param("status") String status);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Task t SET t.task_status = 'Completed' WHERE t.id = :taskId")
+    void updateTaskStatus(@Param("taskId") Long taskId);
 
 }

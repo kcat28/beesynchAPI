@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
         return rankingRepo.save(RankData);
     }
 
-    @DeleteMapping("/DeleteRankData/{rankId}")
+    @DeleteMapping("/DeleteRankData/{rankId}")// change to response entity
     public String deleteById(@PathVariable Long rankId){
         rankingRepo.deleteById(rankId);
         return "deleted ranking with id of: " + rankId;

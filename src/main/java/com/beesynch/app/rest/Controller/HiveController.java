@@ -48,7 +48,7 @@ public class HiveController {
     public ResponseEntity<?> updateHive(@RequestBody HiveDTO hiveRequest) {
         try{
             Hive hive = hiveService.updateHive(hiveRequest);
-            return ResponseEntity.ok(hive);
+            return ResponseEntity.ok("Hive updated successfully " + hive.getHiveName());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

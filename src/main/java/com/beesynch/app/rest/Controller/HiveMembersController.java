@@ -66,7 +66,7 @@ public class HiveMembersController {
         }
         try {
             hiveMembersRepo.deleteHiveMember(userId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("removed user id " + userId + " from hive successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing member: " + e.getMessage());
         }

@@ -50,7 +50,7 @@ public class BillController {
 
         try {
             Bill bill = billService.createFullTask(request);
-            return ResponseEntity.ok(bill);
+            return ResponseEntity.ok("bill created successfully " + bill.getBill_name());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -97,7 +97,7 @@ public class BillController {
     public ResponseEntity<?> updateBill(@PathVariable BillDTO request){
         try{
             Bill bill = billService.editBill(request);
-            return ResponseEntity.ok(bill);
+            return ResponseEntity.ok("bill updated " + bill.getBill_name());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

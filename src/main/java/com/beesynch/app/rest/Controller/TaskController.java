@@ -198,7 +198,16 @@ import java.util.stream.Collectors;
         }
     }
 
-
+    //markAsComplete
+    @PutMapping("/markAsComplete/{taskId}")
+    public ResponseEntity <?> markTaskAsComplete(@PathVariable Long taskId) {
+        try{
+            taskRepo.updateTaskStatus(taskId);
+            return ResponseEntity.ok().body("Task Marked as Complete");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     //Delete a task
     @DeleteMapping("delete/{taskId}") // done
     public String deleteTask(@PathVariable Long taskId) {
