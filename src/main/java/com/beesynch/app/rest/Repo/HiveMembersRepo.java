@@ -2,6 +2,7 @@ package com.beesynch.app.rest.Repo;
 
 import com.beesynch.app.rest.DTO.HiveMembersDTO;
 import com.beesynch.app.rest.DTO.MembersTaskListDTO;
+import com.beesynch.app.rest.Models.Task;
 import com.beesynch.app.rest.Models.HiveMemberId;
 import com.beesynch.app.rest.Models.HiveMembers;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,6 +41,22 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
 
     @Query("SELECT COUNT(hm) > 0 FROM HiveMembers hm WHERE hm.user.id = :userId")
     boolean existsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(t) FROM Task t " +
+            "JOIN Schedule s ON t.id = s.task.id " +
+            "JOIN HiveMembers h ON s.user_id.id = h.user.id " +
+            "WHERE h.user.id = :userId AND t.task_status = 'Completed'")
+    Long countCompletedTasksForUser(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(t) FROM Task t " +
+            "JOIN Schedule s ON t.id = s.task.id " +
+            "JOIN HiveMembers h ON s.user_id.id = h.user.id " +
+            "WHERE h.user.id = :userId")
+    Long totalCountTasksForUser(@Param("userId") Long userId);
+
+    @Query("SELECT hm.completionRate FROM HiveMembers hm WHERE hm.user.id = :userId")
+    Double getCompletionRate(@Param("userId") Long userId);
+
 
 
 

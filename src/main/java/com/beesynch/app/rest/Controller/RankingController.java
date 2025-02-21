@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
     @Autowired
     private RankingService rankingService;
 
+    // controller is for manual update only/ automated every 00:00 monday ph time
     @GetMapping("/updateLeaderboard")
     public String updateLeaderboard() {
         rankingService.updateLeaderboardWeekly();
@@ -59,7 +60,7 @@ import java.util.stream.Collectors;
             );
             return ResponseEntity.ok(rankingDTO);
         } else {
-            return ResponseEntity.notFound().build(); // Return 404 if not found
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -74,8 +75,5 @@ import java.util.stream.Collectors;
         rankingRepo.deleteById(rankId);
         return "deleted ranking with id of: " + rankId;
     }
-
-
-
 
 }

@@ -3,10 +3,13 @@ package com.beesynch.app.rest.Controller;
 import com.beesynch.app.rest.DTO.HiveMembersDTO;
 import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Repo.HiveMembersRepo;
+import com.beesynch.app.rest.Service.RankingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -15,6 +18,9 @@ import java.util.List;
 public class HiveMembersController {
     @Autowired
     private HiveMembersRepo hiveMembersRepo;
+
+    @Autowired
+    private RankingService rankingService;
 
     @GetMapping("/")
     public List<HiveMembersDTO> getAllHiveMembers(){
@@ -37,6 +43,13 @@ public class HiveMembersController {
     }
 
 
+    @GetMapping("/CompletionRate/{id}")
+    public Double getCompletionRate(@PathVariable Long id) {
+        rankingService.updateCompletionRates();
+        return hiveMembersRepo.getCompletionRate(id);
+    }
+
+
     // add member to a hive db
     @PostMapping("/join")
     public String newHiveMate(@RequestBody HiveMembersDTO hiveMate) {
@@ -45,6 +58,7 @@ public class HiveMembersController {
         return "HiveMate added and notification sent!";
     }
 
+    //kick user from hive
     @DeleteMapping("/Remove/{userId}")
     public ResponseEntity<?> removeHiveMember(@PathVariable long userId) {
         if (!hiveMembersRepo.existsByUserId(userId)) {
@@ -57,5 +71,7 @@ public class HiveMembersController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing member: " + e.getMessage());
         }
     }
+
+
 
 }

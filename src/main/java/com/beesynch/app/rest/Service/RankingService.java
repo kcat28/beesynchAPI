@@ -2,8 +2,10 @@ package com.beesynch.app.rest.Service;
 
 import com.beesynch.app.rest.DTO.RankingDTO;
 import com.beesynch.app.rest.Models.Hive;
+import com.beesynch.app.rest.Models.HiveMembers;
 import com.beesynch.app.rest.Models.Ranking;
 import com.beesynch.app.rest.Models.User;
+import com.beesynch.app.rest.Repo.HiveMembersRepo;
 import com.beesynch.app.rest.Repo.HiveRepo;
 import com.beesynch.app.rest.Repo.RankingRepo;
 import com.beesynch.app.rest.Repo.UserRepo;
@@ -33,6 +35,9 @@ public class RankingService {
 
     @Autowired
     private HiveRepo hiveRepo;
+
+    @Autowired
+    private HiveMembersRepo hiveMembersRepo;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -95,5 +100,23 @@ public class RankingService {
         entityManager.flush(); // changes are flushed to the database
         entityManager.clear(); // clears persistence context to avoid stale data
         System.out.println("Current rankings cleared.");
+    }
+
+    @Scheduled(cron = "0 0 16 * * MON", zone = "Asia/Manila") // Every Monday at 4PM
+    public void updateCompletionRates() {
+        List<HiveMembers> members = hiveMembersRepo.findAll();
+
+        for (HiveMembers member : members) {
+            Long userId = member.getUser_id().getId();
+            Long completed = hiveMembersRepo.countCompletedTasksForUser(userId);
+            Long allTasks = hiveMembersRepo.totalCountTasksForUser(userId);
+
+            double completionRate = (allTasks == 0) ? 0.0 : (completed.doubleValue() / allTasks.doubleValue()) * 100;
+
+            member.setcompletionRate(completionRate);
+            hiveMembersRepo.save(member);
+        }
+
+        System.out.println("Completion rates updated successfully!");
     }
 }

@@ -36,8 +36,8 @@ public class HiveController {
         }
     }
 
-    @DeleteMapping("deleteHive")//done
-    public ResponseEntity<String> deleteHive(@RequestParam Long hiveId) {
+    @DeleteMapping("deleteHive/{hiveId}")//done
+    public ResponseEntity<String> deleteHive(@PathVariable Long hiveId) {
         hiveRepo.deleteById(hiveId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Hive deleted with ID: " + hiveId);

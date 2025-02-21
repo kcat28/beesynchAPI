@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 20, 2025 at 09:19 AM
+-- Generation Time: Feb 21, 2025 at 04:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -78,15 +78,16 @@ CREATE TABLE `household_members` (
   `ranking_id` int(11) DEFAULT NULL,
   `role` varchar(200) NOT NULL,
   `points` int(11) DEFAULT NULL,
-  `achievements` varchar(300) DEFAULT NULL
+  `achievements` varchar(300) DEFAULT NULL,
+  `completion_rate` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `household_members`
 --
 
-INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`) VALUES
-(2, 1, NULL, 'member', 100, 'null');
+INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`, `completion_rate`) VALUES
+(2, 1, NULL, 'member', 100, 'null', 50);
 
 -- --------------------------------------------------------
 
@@ -108,7 +109,6 @@ CREATE TABLE `notification` (
 
 INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `message`, `notif_created_date`) VALUES
 (67, 171, 1, 'New task Created: checking for sched', '2025-02-10'),
-(68, 172, 1, 'New task Created: checking for sched', '2025-02-13'),
 (69, 173, NULL, 'New Bill Created: Electricity Bill', '2025-02-13');
 
 -- --------------------------------------------------------
@@ -167,8 +167,7 @@ CREATE TABLE `schedule` (
 --
 
 INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_date`, `end_date`, `recurrence`, `due_time`) VALUES
-(171, 136, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
-(172, 137, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
+(171, 136, NULL, 2, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
 (173, NULL, 13, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
 (179, 135, NULL, 2, '2024-02-10', '2024-02-17', 'Daily', '23:00:00'),
 (192, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00');
@@ -196,9 +195,7 @@ CREATE TABLE `task` (
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
 (135, 'sampleeditwithsched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
-(136, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
-(137, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
-(138, 'checking for sched', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas');
+(136, 'checking for sched', 'This is a sample task description.', 'General', 'Completed', 1, NULL, 'sadas');
 
 -- --------------------------------------------------------
 
@@ -221,10 +218,6 @@ INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALU
 (176, 135, 1, '2025-01-20'),
 (177, 136, 1, '2024-02-10'),
 (178, 136, 2, '2024-02-10'),
-(179, 137, 1, '2024-02-10'),
-(180, 137, 2, '2024-02-10'),
-(181, 138, 1, '2024-02-10'),
-(182, 138, 2, '2024-02-10'),
 (183, 135, 2, '2024-02-10'),
 (184, 135, 2, '2024-02-10');
 

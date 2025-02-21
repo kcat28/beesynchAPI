@@ -6,6 +6,7 @@ import com.beesynch.app.rest.DTO.TaskCreationRequestDTO;
 import com.beesynch.app.rest.Models.*;
 import com.beesynch.app.rest.Repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class TaskService {
             // Step 1: Create and save the Task
             Task task = new Task();
             task.setTitle(taskCreationRequest.getTitle());
-            task.setDescription(taskCreationRequest.getDescription()); // i think this allows for null
+            task.setDescription(taskCreationRequest.getDescription());
             task.setCategory(taskCreationRequest.getCategory());
             task.setTask_status(taskCreationRequest.getTask_status());
             task.setRewardpts(taskCreationRequest.getRewardpts());
@@ -173,6 +174,10 @@ public class TaskService {
         return updatedTask;
     }
 
+    @Scheduled(cron = "0 0 16 * * MON", zone = "Asia/Manila")
+    public Integer flushCompletedTasks(){
+        return taskRepo.flushTaskByStatus("Completed");
+    }
 }
 
 

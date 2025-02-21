@@ -20,7 +20,7 @@ public class HiveMembers {
     private Hive hive;
 
     @ManyToOne
-    @JoinColumn(name = "ranking_id", nullable = false)
+    @JoinColumn(name = "ranking_id")
     private Ranking ranking;
 
     @Column(length = 200)
@@ -31,6 +31,9 @@ public class HiveMembers {
 
     @Column(length = 65535)
     private String achievements;
+
+    @Column
+    private Double completionRate = 0.0;
 
     // Getters and setters
     public HiveMemberId getId() {
@@ -55,6 +58,10 @@ public class HiveMembers {
 
     public void setHive_id(Hive hive_id) {
         this.hive = hive_id;
+    }
+
+    public void setcompletionRate(Double completionRate) {
+        this.completionRate = completionRate;
     }
 
     public Ranking getRanking_id() {

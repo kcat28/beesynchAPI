@@ -188,21 +188,29 @@ import java.util.stream.Collectors;
     }
 
     // update task
-        @PutMapping("/updateTask")
-        public ResponseEntity <?> ediTask(@RequestBody TaskCreationRequestDTO request) {
-            try {
-                Task task = taskService.editTask(request);
-                return ResponseEntity.ok(task);
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+    @PutMapping("/updateTask")
+    public ResponseEntity <?> ediTask(@RequestBody TaskCreationRequestDTO request) {
+        try {
+            Task task = taskService.editTask(request);
+            return ResponseEntity.ok(task);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
 
     //Delete a task
-        @DeleteMapping("/{taskId}") // done
-        public String deleteTask(@PathVariable Long taskId) {
-            taskRepo.deleteById(taskId);
-            return "Task deleted with ID: " + taskId;
-        }
+    @DeleteMapping("delete/{taskId}") // done
+    public String deleteTask(@PathVariable Long taskId) {
+        taskRepo.deleteById(taskId);
+        return "Task deleted with ID: " + taskId;
+    }
+
+    // controller is for manual flushing only/ automated every 00:00 monday ph time
+    @GetMapping("/flushCompleted")
+    public String manuallyFlushCompletedTasks() {
+        Integer deletedCount = taskService.flushCompletedTasks();
+        return deletedCount + " Completed tasks deleted.";
+    }
+
 }

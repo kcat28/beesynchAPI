@@ -75,9 +75,26 @@ public class BillController {
                 ));
     }
 
+    @GetMapping("/getAllBills")
+    public List<Bill> getAllBills(){
+        return billRepo.findAll();
+    }
+
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity getBillById(@PathVariable long id){
+        try{
+            Bill bill = billRepo.findById(id).get();
+            return ResponseEntity.ok(bill);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
     //update bill
-    @PutMapping("/updateBill")
-    public ResponseEntity<?> updateBill(@RequestBody BillDTO request){
+    @PutMapping("/updateBill/{request}")
+    public ResponseEntity<?> updateBill(@PathVariable BillDTO request){
         try{
             Bill bill = billService.editBill(request);
             return ResponseEntity.ok(bill);
@@ -86,8 +103,4 @@ public class BillController {
         }
     }
 
-    @GetMapping("/getAllBills")
-    public List<Bill> getAllBills(){
-        return billRepo.findAll();
-    }
 }
