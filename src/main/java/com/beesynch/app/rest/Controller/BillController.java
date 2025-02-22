@@ -28,6 +28,7 @@ public class BillController {
     @Autowired
     private BillService billService;
 
+    //create a bill
     @PostMapping("/createFullBill")
     public ResponseEntity<?> createBill (@RequestBody BillDTO request){
         System.out.println("Received Schedule: " + request.getSchedules());
@@ -57,6 +58,7 @@ public class BillController {
     }
 
 
+    //get bill by end of date
     @GetMapping("/bills-by-end-date")
     public Map<String, List<Map<String, String>>> getBillsGroupedByEndDate() {
         return billRepo.findAll().stream()
@@ -75,12 +77,14 @@ public class BillController {
                 ));
     }
 
+    //get all bills
     @GetMapping("/getAllBills")
     public List<Bill> getAllBills(){
         return billRepo.findAll();
     }
 
 
+    //get bill by its id
     @GetMapping("/getById/{id}")
     public ResponseEntity getBillById(@PathVariable long id){
         try{
@@ -91,13 +95,35 @@ public class BillController {
         }
     }
 
+    //Mark as complete
+    @PutMapping("/MarkAsComplete/{id}")
+    public ResponseEntity markBillAsComplete(@PathVariable long id){
+        try{
+            billRepo.updateBillStatus(id);
+            return ResponseEntity.ok().body("Bill Marked as Complete: ID " + id);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
-    //update bill
+
+    //Update bill
     @PutMapping("/updateBill/{request}")
     public ResponseEntity<?> updateBill(@PathVariable BillDTO request){
         try{
             Bill bill = billService.editBill(request);
             return ResponseEntity.ok("bill updated " + bill.getBill_name());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //Delete bill
+    @DeleteMapping("/deleteBill/{id}")
+    public ResponseEntity<?> deleteBill(@PathVariable long id){
+        try{
+            billRepo.deleteById(id);
+            return ResponseEntity.ok().body("Bill Deleted " + id);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

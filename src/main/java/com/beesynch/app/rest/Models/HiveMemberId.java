@@ -12,6 +12,11 @@ public class HiveMemberId implements Serializable {
     // Default constructor, getters, and setters
     public HiveMemberId() {}
 
+    public HiveMemberId(Integer userId, Integer hiveId) {
+        this.userId = userId;
+        this.hiveId = hiveId;
+    }
+
     public Integer getUserId() {
         return userId;
     }
