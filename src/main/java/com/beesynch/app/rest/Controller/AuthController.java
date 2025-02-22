@@ -59,7 +59,7 @@ public class AuthController {
 
             // Step 3: Return the token in the response
             return ResponseEntity.ok().body(
-                    Map.of("token", token) // Returns the token and the user info
+                    Map.of("token", token, "User ID:", user.getId()) // Returns the token and the user info
             );
 
         } catch (Exception e) {
