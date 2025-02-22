@@ -41,6 +41,25 @@ public class UserService implements UserDetailsService {
         return authentication.getName(); // Returns the username (or principal) of the logged-in user
     }
 
+    public Long getLoggedInUserId() {
+        // Retrieve the current authenticated user from the SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null; // No logged-in user
+        }
+
+        // Fetch the user based on the username
+        String username = authentication.getName();
+        User user = userRepo.findByUserName(username);
+
+        if (user == null) {
+            return null; // User not found
+        }
+
+        return user.getId(); // Return the user ID
+    }
+
     // generates recovery code for every user signup
     public String generateRecoveryCode() {
         // Generate a unique recovery code using UUID
