@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>{
-    @Query("SELECT u FROM User u WHERE u.user_name = ?1")
-    User findByUserName(String userName);
+     @Query("SELECT u FROM User u WHERE u.user_name = :userName")
+    User findByUserName(@Param("userName") String userName);
 
     @Modifying
     @Transactional
