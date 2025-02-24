@@ -50,6 +50,8 @@ public class HiveMembersController {
         return hiveMembersRepo.getMembersTaskListInfo();
     }
 
+
+    //ranking and completion rate
     @GetMapping("/CompletionRate/{id}")
     public Double getCompletionRate(@PathVariable Long id) {
         rankingService.updateCompletionRates();

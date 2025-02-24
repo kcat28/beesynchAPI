@@ -6,30 +6,30 @@ import java.io.Serializable;
 @Embeddable
 public class HiveMemberId implements Serializable {
 
-    private Integer userId;
-    private Integer hiveId;
+    private Long userId;
+    private Long hiveId;
 
     // Default constructor, getters, and setters
     public HiveMemberId() {}
 
-    public HiveMemberId(Integer userId, Integer hiveId) {
+    public HiveMemberId(Long userId, Long hiveId) {
         this.userId = userId;
         this.hiveId = hiveId;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public Integer getHiveId() {
+    public Long getHiveId() {
         return hiveId;
     }
 
-    public void setHiveId(Integer hiveId) {
+    public void setHiveId(Long hiveId) {
         this.hiveId = hiveId;
     }
 

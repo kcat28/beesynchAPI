@@ -3,6 +3,7 @@ import com.beesynch.app.rest.DTO.HiveDTO;
 import com.beesynch.app.rest.Models.Hive;
 import com.beesynch.app.rest.Repo.HiveRepo;
 import com.beesynch.app.rest.Service.HiveService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +27,17 @@ public class HiveController {
     }
 
     @PostMapping("/createHive")
-    public ResponseEntity<?> createHive(@RequestBody HiveDTO hiveRequest) {
+    public ResponseEntity<?> createHive(@RequestBody HiveDTO hiveRequest, HttpServletRequest request) {
         try{
-            Hive hive = hiveService.createHiveNAdmin(hiveRequest);
+            Hive hive = hiveService.createHiveNAdmin(hiveRequest, request);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Hive created with name: " + hive.getHiveName() + " and creation date: " + hive.getHive_created_date());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
 
     @DeleteMapping("deleteHive/{hiveId}")//done
     public ResponseEntity<String> deleteHive(@PathVariable Long hiveId) {

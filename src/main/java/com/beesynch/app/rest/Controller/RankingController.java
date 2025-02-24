@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
         }
     }
 
-
+        //dapat isama upon join ng hive
     @PostMapping("/createNewRankingData")
     public Ranking createRankData(@RequestBody Ranking RankData){
         return rankingRepo.save(RankData);
