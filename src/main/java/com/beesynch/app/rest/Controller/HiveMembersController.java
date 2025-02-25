@@ -4,9 +4,11 @@ import com.beesynch.app.rest.DTO.HiveMembersDTO;
 import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.User;
 import com.beesynch.app.rest.Repo.HiveMembersRepo;
+import com.beesynch.app.rest.Security.JwtUtil;
 import com.beesynch.app.rest.Service.RankingService;
 import com.beesynch.app.rest.Repo.UserRepo;
 import com.beesynch.app.rest.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,9 @@ public class HiveMembersController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @GetMapping("/")
     public List<HiveMembersDTO> getAllHiveMembers() {
         return hiveMembersRepo.getAllHiveMembers();
@@ -50,6 +55,14 @@ public class HiveMembersController {
         return hiveMembersRepo.getMembersTaskListInfo();
     }
 
+
+    @GetMapping("/achievements")
+    public String getAchievements(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7); // remove "Bearer"
+        String userId = String.valueOf(jwtUtil.extractUserId(token)); // extract user id from jwt
+        rankingService.updateLeaderboardWeekly();
+        return hiveMembersRepo.getAchievements(Long.valueOf(userId));
+    }
 
     //ranking and completion rate
     @GetMapping("/CompletionRate/{id}")
