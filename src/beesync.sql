@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Feb 24, 2025 at 02:21 PM
+-- Host: 127.0.0.1
+-- Generation Time: Feb 25, 2025 at 11:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -65,7 +65,8 @@ CREATE TABLE `hive` (
 INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`, `img_path`) VALUES
 (1, 'mojojo', '2025-01-11', '1234WACK.jpg'),
 (3, 'Main Hive', '2025-02-19', NULL),
-(19, 'd with admin', '2025-02-24', 'qwerty.jpg');
+(19, 'd with admin', '2025-02-24', 'qwerty.jpg'),
+(20, 'Hs', '2025-02-25', NULL);
 
 -- --------------------------------------------------------
 
@@ -79,7 +80,6 @@ CREATE TABLE `household_members` (
   `ranking_id` int(11) DEFAULT NULL,
   `role` varchar(200) NOT NULL,
   `points` int(11) DEFAULT NULL,
-  `achievements` varchar(300) DEFAULT NULL,
   `completion_rate` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -87,9 +87,10 @@ CREATE TABLE `household_members` (
 -- Dumping data for table `household_members`
 --
 
-INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`, `completion_rate`) VALUES
-(2, 1, NULL, 'member', 100, 'null', 50),
-(9, 19, 7, 'ROLE_ADMIN', 0, NULL, 0);
+INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `completion_rate`) VALUES
+(2, 1, NULL, 'member', 8, 50),
+(9, 19, 30, 'ROLE_ADMIN', 2, 66.66666666666666),
+(9, 20, 30, 'ROLE_ADMIN', 2, 66.66666666666666);
 
 -- --------------------------------------------------------
 
@@ -112,7 +113,8 @@ CREATE TABLE `notification` (
 INSERT INTO `notification` (`notification_id`, `schedule_id`, `user_id`, `message`, `notif_created_date`) VALUES
 (69, 173, NULL, 'New Bill Created: Electricity Bill', '2025-02-13'),
 (71, 193, 1, 'New task Created: changereturn added', '2025-02-22'),
-(72, 194, 1, 'New task Created: changereturn added', '2025-02-22');
+(72, 194, 1, 'New task Created: changereturn added', '2025-02-22'),
+(73, 195, NULL, 'New task Created: Hmm', '2025-02-25');
 
 -- --------------------------------------------------------
 
@@ -134,8 +136,8 @@ CREATE TABLE `ranking` (
 --
 
 INSERT INTO `ranking` (`ranking_id`, `user_id`, `hive_id`, `rank_position`, `period_start`, `period_end`) VALUES
-(6, 1, 1, 1, '2025-01-31', '2025-02-02'),
-(7, 9, 19, 0, '2025-02-24', NULL);
+(30, 9, 19, 1, '2025-02-25', '2025-03-02'),
+(31, 9, 20, 1, '2025-02-25', '2025-03-02');
 
 --
 -- Triggers `ranking`
@@ -171,12 +173,13 @@ CREATE TABLE `schedule` (
 --
 
 INSERT INTO `schedule` (`schedule_id`, `task_id`, `bill_id`, `user_id`, `start_date`, `end_date`, `recurrence`, `due_time`) VALUES
-(171, 136, NULL, 2, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
+(171, 136, NULL, 9, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
 (173, NULL, 13, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
 (179, 135, NULL, 2, '2024-02-10', '2024-02-17', 'Daily', '23:00:00'),
 (192, NULL, 12, NULL, '2025-01-30', '2025-01-30', 'Once', '19:10:00'),
-(193, 139, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
-(194, 140, NULL, 1, '2024-02-10', '2024-02-17', 'Daily', '06:00:00');
+(193, 139, NULL, 9, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
+(194, 140, NULL, 9, '2024-02-10', '2024-02-17', 'Daily', '06:00:00'),
+(195, 141, NULL, 2, '2025-02-25', '2025-02-25', 'Once', '23:06:10');
 
 -- --------------------------------------------------------
 
@@ -200,10 +203,11 @@ CREATE TABLE `task` (
 --
 
 INSERT INTO `task` (`task_id`, `title`, `description`, `category`, `task_status`, `rewardpts`, `completion_date`, `img_path`) VALUES
-(135, 'sampleeditwithsched', 'This is a sample task description.', 'General', 'Completed', 1, NULL, 'sadas'),
+(135, 'sampleeditwithsched', 'This is a sample task description.', 'General', 'Incomplete', 1, NULL, 'sadas'),
 (136, 'checking for sched', 'This is a sample task description.', 'General', 'Completed', 1, NULL, 'sadas'),
-(139, 'changereturn added', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas'),
-(140, 'changereturn added', 'This is a sample task description.', 'General', 'Ongoing', 1, NULL, 'sadas');
+(139, 'changereturn added', 'This is a sample task description.', 'General', 'Incomplete', 1, NULL, 'sadas'),
+(140, 'changereturn added', 'This is a sample task description.', 'General', 'Completed', 1, NULL, 'sadas'),
+(141, 'Hmm', NULL, 'Task', 'Completed', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -224,14 +228,10 @@ CREATE TABLE `task_assignment` (
 
 INSERT INTO `task_assignment` (`id`, `task_id`, `user_id`, `assigned_date`) VALUES
 (176, 135, 1, '2025-01-20'),
-(177, 136, 1, '2024-02-10'),
-(178, 136, 2, '2024-02-10'),
-(183, 135, 2, '2024-02-10'),
-(184, 135, 2, '2024-02-10'),
-(185, 139, 1, '2024-02-10'),
-(186, 139, 2, '2024-02-10'),
-(187, 140, 1, '2024-02-10'),
-(188, 140, 2, '2024-02-10');
+(177, 136, 9, '2024-02-10'),
+(185, 139, 9, '2024-02-10'),
+(187, 140, 9, '2024-02-10'),
+(189, 141, 1, '2025-02-25');
 
 -- --------------------------------------------------------
 
@@ -346,37 +346,37 @@ ALTER TABLE `bills`
 -- AUTO_INCREMENT for table `hive`
 --
 ALTER TABLE `hive`
-  MODIFY `hive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `hive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `ranking`
 --
 ALTER TABLE `ranking`
-  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=195;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
 
 --
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
 
 --
 -- AUTO_INCREMENT for table `task_assignment`
 --
 ALTER TABLE `task_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
 
 --
 -- AUTO_INCREMENT for table `users`

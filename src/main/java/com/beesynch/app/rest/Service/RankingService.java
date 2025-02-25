@@ -46,6 +46,7 @@ public class RankingService {
     public void updateLeaderboardWeekly() {
         deleteLeaderBoard();
         updateLeaderBoard();
+        updateCompletionRates();
     }
 
     // Method to update leaderboard
@@ -62,9 +63,10 @@ public class RankingService {
         int position = 0;
 
         for (Object[] obj : leaderboardRaw){
+            System.out.println(Arrays.toString(obj));
             Long userId = (Long) obj[0];  // Get user ID
             Long totalPoints = (Long) obj[1];  // Get the total reward points
-            Long hiveId = (Long) obj[2];  // Get the hive name
+            Long hiveId = (Long) obj[2];  // Get the hive id
 
             position++;
 
@@ -85,8 +87,11 @@ public class RankingService {
             ranking.setRank_position(rank);
             ranking.setPeriod_start(new Date(System.currentTimeMillis()));
             ranking.setPeriod_end(Date.valueOf(endOfWeek));
-
             rankingRepo.save(ranking);
+
+            //saving total points to hivemembers table
+            System.out.println(user.getId());
+            hiveMembersRepo.insertPoints(user.getId(), hiveId, totalPoints);
 
             // debugging purposes: payload
             System.out.println("Rank: " + (1));
@@ -110,6 +115,7 @@ public class RankingService {
             Long userId = member.getUser_id().getId();
             Long completed = hiveMembersRepo.countCompletedTasksForUser(userId);
             Long allTasks = hiveMembersRepo.totalCountTasksForUser(userId);
+            System.out.println("user id: " + userId + " all tasks: " + allTasks  + " completed: " + completed);
 
             double completionRate = (allTasks == 0) ? 0.0 : (completed.doubleValue() / allTasks.doubleValue()) * 100;
 

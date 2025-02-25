@@ -4,16 +4,20 @@ import com.beesynch.app.rest.DTO.HiveMembersDTO;
 import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.User;
 import com.beesynch.app.rest.Repo.HiveMembersRepo;
+import com.beesynch.app.rest.Security.JwtUtil;
 import com.beesynch.app.rest.Service.RankingService;
 import com.beesynch.app.rest.Repo.UserRepo;
 import com.beesynch.app.rest.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/HiveMembers")
@@ -30,7 +34,10 @@ public class HiveMembersController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @GetMapping("/all")
     public List<HiveMembersDTO> getAllHiveMembers() {
         return hiveMembersRepo.getAllHiveMembers();
     }
@@ -51,12 +58,31 @@ public class HiveMembersController {
     }
 
 
-    //ranking and completion rate
-    @GetMapping("/CompletionRate/{id}")
-    public Double getCompletionRate(@PathVariable Long id) {
+    @GetMapping("/CompRateAndPoints") // fetch stats for userId that triggered the request controller
+    public Map<String, Double> getCompletionRate(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        Long userId = jwtUtil.extractUserId(token);
+
         rankingService.updateCompletionRates();
-        return hiveMembersRepo.getCompletionRate(id);
+
+        List<Object[]> results = hiveMembersRepo.getCompRateAndPoints(userId);
+
+        if (!results.isEmpty()) {
+            Object[] row = results.get(0); // Assuming you only need the first row
+            double completionRate = row[0] != null ? ((Number) row[0]).doubleValue() : 0.0;
+            double points = row[1] != null ? ((Number) row[1]).doubleValue() : 0.0;
+
+            return Map.of("completionRate", completionRate, "points", points);
+        }
+
+        return Map.of("completionRate", 0.0, "points", 0.0); // Default values if no data
     }
+
 
     @PostMapping("/join")
     public String newHiveMate(@RequestBody HiveMembersDTO hiveMate) {

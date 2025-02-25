@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
     @GetMapping("/updateLeaderboard")
     public String updateLeaderboard() {
         rankingService.updateLeaderboardWeekly();
-        return "for manual update (testing only)";
+        return " successfully updated leaderboards (manual call)";
     }
 
     @GetMapping("/")

@@ -85,7 +85,6 @@ public class HiveService {
         newMember.setRanking_id(newRankData);
         newMember.setRole("ROLE_ADMIN");
         newMember.setPoints(0);
-        newMember.setAchievements(null);
         newMember.setcompletionRate(0.0);
         hiveMembersRepo.save(newMember);
 
