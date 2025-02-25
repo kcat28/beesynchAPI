@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface ScheduleRepo extends JpaRepository<Schedule, Long>{
+public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
 
     @Modifying
     @Query("DELETE FROM Schedule s WHERE s.task.id = :taskid")
