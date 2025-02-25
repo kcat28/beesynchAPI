@@ -47,16 +47,9 @@ public class AuthController {
             User user = userRepo.findByUserName(userDTO.getUser_name()); // Find user by username
 
             // Validate the retrieved user and its password
-
             if (user == null || !passwordEncoder.matches(userDTO.getUser_password(), user.getUser_password())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
             }
-
-             if (user == null || !passwordEncoder.matches(userDTO.getUser_password(),
-             user.getUser_password())) {
-             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
-             }
-
 
             // Step 2: Generate JWT token for authenticated user
             String token = jwtUtil.generateToken(user.getId()); // Use user ID instead of username
@@ -69,7 +62,6 @@ public class AuthController {
                     "firstName", user.getFirst_name(),
                     "lastName", user.getLast_name(),
                     "email", user.getUser_email()));
-
 
         } catch (Exception e) {
             // Log the exception (use a logger in production)
