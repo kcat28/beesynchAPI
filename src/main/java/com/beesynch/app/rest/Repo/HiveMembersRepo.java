@@ -12,17 +12,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
 
-    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.img_path, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points, hm.achievements) " +
+    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.img_path, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points) " +
             "FROM HiveMembers hm " +
             "JOIN User u ON hm.id.userId = u.id " +  //  reference to userId in the composite key
             "JOIN Hive h ON hm.id.hiveId = h.hive_id " +  //  reference to hiveId in the composite key
             "WHERE u.user_name = :user_name")
     HiveMembersDTO findByUsername(@Param("user_name") String username);
 
-    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.img_path, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points, hm.achievements) " +
+    @Query("SELECT new com.beesynch.app.rest.DTO.HiveMembersDTO(u.id, u.img_path, u.user_name, u.first_name, u.last_name, u.user_email, h.hive_id, h.hiveName, hm.role, hm.points) " +
             "FROM HiveMembers hm " +
             "JOIN User u ON hm.id.userId = u.id " +  // reference to userId in the composite key
             "JOIN Hive h ON hm.id.hiveId = h.hive_id") // reference to hiveId in the composite key
@@ -53,11 +54,14 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
             "WHERE h.user.id = :userId")
     Long totalCountTasksForUser(@Param("userId") Long userId);
 
-    @Query("SELECT hm.completionRate FROM HiveMembers hm WHERE hm.user.id = :userId")
-    Double getCompletionRate(@Param("userId") Long userId);
+    @Query("SELECT hm.completionRate, hm.points FROM HiveMembers hm WHERE hm.user.id = :userId")
+    List<Object[]> getCompRateAndPoints(@Param("userId") Long userId);
 
-    @Query("SELECT hm.achievements FROM HiveMembers hm WHERE hm.user.id = :userId")
-    String getAchievements(@Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE HiveMembers hm SET hm.points = :points WHERE hm.user.id = :userId AND hm.hive.id = :hiveId")
+    void insertPoints(@Param("userId") Long userId, @Param("hiveId") Long hiveId, @Param("points") Long points);
 
 
 

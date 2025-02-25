@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/HiveMembers")
@@ -35,7 +37,7 @@ public class HiveMembersController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public List<HiveMembersDTO> getAllHiveMembers() {
         return hiveMembersRepo.getAllHiveMembers();
     }
@@ -56,20 +58,31 @@ public class HiveMembersController {
     }
 
 
-    @GetMapping("/achievements")
-    public String getAchievements(HttpServletRequest request){
-        String token = request.getHeader("Authorization").substring(7); // remove "Bearer"
-        String userId = String.valueOf(jwtUtil.extractUserId(token)); // extract user id from jwt
-        rankingService.updateLeaderboardWeekly();
-        return hiveMembersRepo.getAchievements(Long.valueOf(userId));
+    @GetMapping("/CompRateAndPoints") // fetch stats for userId that triggered the request controller
+    public Map<String, Double> getCompletionRate(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        Long userId = jwtUtil.extractUserId(token);
+
+        rankingService.updateCompletionRates();
+
+        List<Object[]> results = hiveMembersRepo.getCompRateAndPoints(userId);
+
+        if (!results.isEmpty()) {
+            Object[] row = results.get(0); // Assuming you only need the first row
+            double completionRate = row[0] != null ? ((Number) row[0]).doubleValue() : 0.0;
+            double points = row[1] != null ? ((Number) row[1]).doubleValue() : 0.0;
+
+            return Map.of("completionRate", completionRate, "points", points);
+        }
+
+        return Map.of("completionRate", 0.0, "points", 0.0); // Default values if no data
     }
 
-    //ranking and completion rate
-    @GetMapping("/CompletionRate/{id}")
-    public Double getCompletionRate(@PathVariable Long id) {
-        rankingService.updateCompletionRates();
-        return hiveMembersRepo.getCompletionRate(id);
-    }
 
     @PostMapping("/join")
     public String newHiveMate(@RequestBody HiveMembersDTO hiveMate) {

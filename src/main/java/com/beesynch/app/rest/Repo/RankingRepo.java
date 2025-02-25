@@ -19,7 +19,8 @@ public interface RankingRepo extends JpaRepository<Ranking, Long>{
             "JOIN a.user u " +
             "JOIN HiveMembers h ON h.user.id = u.id " +
             "WHERE t.task_status = 'Completed' " +
-            "GROUP BY a.user.id, h.hive")
+            "GROUP BY a.user.id, h.hive.hive_id")
     List<Object[]> getLeaderboard();
+
 
 }

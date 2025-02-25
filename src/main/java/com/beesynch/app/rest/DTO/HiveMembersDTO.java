@@ -17,12 +17,11 @@ public class HiveMembersDTO {
     private String hiveName;
     private String role;
     private int points;
-    private String achievements;
 
     // Constructor
     public HiveMembersDTO(Long userId, String img_path, String userName, String firstName, String lastName,
                           String userEmail, Long hiveId, String hiveName, String role,
-                          int points, String achievements) {
+                          int points) {
         this.userId = userId;
         this.img_path = img_path;
         this.userName = userName;
@@ -33,7 +32,6 @@ public class HiveMembersDTO {
         this.hiveName = hiveName;
         this.role = role;
         this.points = points;
-        this.achievements = achievements;
     }
 
     public HiveMembersDTO() {
@@ -121,11 +119,4 @@ public class HiveMembersDTO {
         this.points = points;
     }
 
-    public String getAchievements() { //
-        return achievements;
-    }
-
-    public void setAchievements(String achievements) { //
-        this.achievements = achievements;
-    }
 }

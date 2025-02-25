@@ -29,9 +29,6 @@ public class HiveMembers {
     @Column
     private Integer points;
 
-    @Column(length = 65535)
-    private String achievements;
-
     @Column
     private Double completionRate = 0.0;
 
@@ -88,11 +85,4 @@ public class HiveMembers {
         this.points = points;
     }
 
-    public String getAchievements() {
-        return achievements;
-    }
-
-    public void setAchievements(String achievements) {
-        this.achievements = achievements;
-    }
 }

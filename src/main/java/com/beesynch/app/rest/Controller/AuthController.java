@@ -47,28 +47,21 @@ public class AuthController {
             User user = userRepo.findByUserName(userDTO.getUser_name()); // Find user by username
 
             // Validate the retrieved user and its password
-<<<<<<< Updated upstream
+
             if (user == null || !passwordEncoder.matches(userDTO.getUser_password(), user.getUser_password())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
             }
-=======
+
             // if (user == null || !passwordEncoder.matches(userDTO.getUser_password(),
             // user.getUser_password())) {
             // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username
             // or Password");
             // }
->>>>>>> Stashed changes
+
 
             // Step 2: Generate JWT token for authenticated user
             String token = jwtUtil.generateToken(user.getId()); // Use user ID instead of username
 
-<<<<<<< Updated upstream
-
-            // Step 3: Return the token in the response
-            return ResponseEntity.ok().body(
-                    Map.of("token", token, "User ID:", user.getId()) // Returns the token and the user info
-            );
-=======
             // Step 3: Return the token and user information in the response
             return ResponseEntity.ok().body(Map.of(
                     "token", token,
@@ -77,7 +70,6 @@ public class AuthController {
                     "firstName", user.getFirst_name(),
                     "lastName", user.getLast_name(),
                     "email", user.getUser_email()));
->>>>>>> Stashed changes
 
         } catch (Exception e) {
             // Log the exception (use a logger in production)
