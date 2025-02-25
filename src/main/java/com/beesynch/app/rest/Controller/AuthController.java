@@ -52,11 +52,10 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
             }
 
-            // if (user == null || !passwordEncoder.matches(userDTO.getUser_password(),
-            // user.getUser_password())) {
-            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username
-            // or Password");
-            // }
+             if (user == null || !passwordEncoder.matches(userDTO.getUser_password(),
+             user.getUser_password())) {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
+             }
 
 
             // Step 2: Generate JWT token for authenticated user
