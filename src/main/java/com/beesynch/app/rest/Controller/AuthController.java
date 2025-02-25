@@ -47,18 +47,37 @@ public class AuthController {
             User user = userRepo.findByUserName(userDTO.getUser_name()); // Find user by username
 
             // Validate the retrieved user and its password
+<<<<<<< Updated upstream
             if (user == null || !passwordEncoder.matches(userDTO.getUser_password(), user.getUser_password())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username or Password");
             }
+=======
+            // if (user == null || !passwordEncoder.matches(userDTO.getUser_password(),
+            // user.getUser_password())) {
+            // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Username
+            // or Password");
+            // }
+>>>>>>> Stashed changes
 
             // Step 2: Generate JWT token for authenticated user
             String token = jwtUtil.generateToken(user.getId()); // Use user ID instead of username
 
+<<<<<<< Updated upstream
 
             // Step 3: Return the token in the response
             return ResponseEntity.ok().body(
                     Map.of("token", token, "User ID:", user.getId()) // Returns the token and the user info
             );
+=======
+            // Step 3: Return the token and user information in the response
+            return ResponseEntity.ok().body(Map.of(
+                    "token", token,
+                    "userId", user.getId(),
+                    "username", user.getUser_name(),
+                    "firstName", user.getFirst_name(),
+                    "lastName", user.getLast_name(),
+                    "email", user.getUser_email()));
+>>>>>>> Stashed changes
 
         } catch (Exception e) {
             // Log the exception (use a logger in production)
@@ -66,12 +85,16 @@ public class AuthController {
             System.out.println("Error during login: " + e.getMessage());
 
             // Return a meaningful message for debugging
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong: " + e.getMessage());
         }
     }
 
+    public record VerifyRecoveryCodeRequestDTO(String userName, String recoveryCode) {
+    }
+
     @PostMapping("/verify-recovery-code")
-    public ResponseEntity<?> verifyRecoveryCode(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> verifyRecoveryCode(@RequestBody VerifyRecoveryCodeRequestDTO userDTO) {
         try {
             User user = userRepo.findByUserName(userService.getLoggedInUsername());
             if (user == null) {
@@ -79,7 +102,7 @@ public class AuthController {
                         .body("User not found.");
             }
 
-            if (!userDTO.getRecovery_code().equals(user.getRecovery_code())) {
+            if (!userDTO.recoveryCode.equals(user.getRecovery_code())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Invalid recovery code.");
             }
@@ -92,11 +115,13 @@ public class AuthController {
         }
     }
 
-    public record PasswordChangeRequest(String userName, String newPassword) {}
+    public record PasswordChangeRequestDTO(String userName, String oldPassword, String newPassword) {
+    }
 
     // NEW: implemented password encoder
     @PostMapping("/change-password")
-    public ResponseEntity<?> resetPassword(@RequestBody PasswordChangeRequest userDTO) {
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordChangeRequestDTO userDTO) {
+
         try {
             User user = userRepo.findByUserName(userDTO.userName);
             if (user == null) {
@@ -137,11 +162,14 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid password.");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong while verifying the password.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong while verifying the password.");
         }
     }
 
-    public record SignupRequest(String user_name, String user_password, String user_email, String first_name, String last_name, String recovery_code, boolean is_admin) {}
+    public record SignupRequest(String user_name, String user_password, String user_email, String first_name,
+            String last_name, String recovery_code, boolean is_admin) {
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
@@ -170,10 +198,10 @@ public class AuthController {
             // Log detailed error information
             e.printStackTrace();
             System.out.println("Signup error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong: " + e.getMessage());
         }
     }
-
 
     @GetMapping("/check-username")
     public ResponseEntity<?> checkUsername(@RequestParam String username) {
@@ -185,7 +213,35 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is already taken.");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong while checking the username.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong while checking the username.");
+        }
+    }
+
+    @GetMapping("/verify-token")
+    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token format");
+            }
+
+            String token = authHeader.substring(7); // Remove "Bearer " prefix
+            try {
+                Long userId = jwtUtil.extractUserId(token);
+                User user = userRepo.findById(userId).orElse(null);
+
+                if (user != null) {
+                    return ResponseEntity.ok(Map.of(
+                            "valid", true,
+                            "userId", userId,
+                            "username", user.getUser_name()));
+                }
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token validation failed");
         }
     }
 

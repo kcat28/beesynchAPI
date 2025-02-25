@@ -16,7 +16,6 @@ public class JwtUtil {
     private static final String SECRET_KEY = "may_we_pass_this_term_with_flying_grades";
     private static final long EXPIRATION_TIME = 3600000; // 1 hour (in milliseconds)
 
-
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
@@ -42,7 +41,20 @@ public class JwtUtil {
         return Long.parseLong(userId);
     }
 
-    // Validate token
+    // Validate token without UserDetails
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    // Validate token with UserDetails
     public boolean isValidToken(String token, UserDetails userDetails) {
         try {
             Jwts.parserBuilder()
@@ -55,6 +67,5 @@ public class JwtUtil {
             return false;
         }
     }
-
 
 }
