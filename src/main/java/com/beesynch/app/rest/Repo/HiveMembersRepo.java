@@ -5,6 +5,7 @@ import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.Task;
 import com.beesynch.app.rest.Models.HiveMemberId;
 import com.beesynch.app.rest.Models.HiveMembers;
+import com.beesynch.app.rest.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -64,8 +65,8 @@ public interface HiveMembersRepo extends JpaRepository<HiveMembers, Long>{
     void insertPoints(@Param("userId") Long userId, @Param("hiveId") Long hiveId, @Param("points") Long points);
 
 
-
-
+    @Query("SELECT COUNT(hm) > 0 FROM HiveMembers hm WHERE hm.user.id = :userId AND hm.hive.hive_id = :hiveId")
+    boolean existsByUserIdAndHiveId(@Param("userId") Long userId, @Param("hiveId") Long hiveId);
 
 
 }

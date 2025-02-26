@@ -1,10 +1,13 @@
 package com.beesynch.app.rest.Controller;
 
+import com.beesynch.app.rest.DTO.AddMembersRequestDTO;
 import com.beesynch.app.rest.DTO.HiveMembersDTO;
 import com.beesynch.app.rest.DTO.MembersTaskListDTO;
 import com.beesynch.app.rest.Models.User;
 import com.beesynch.app.rest.Repo.HiveMembersRepo;
+import com.beesynch.app.rest.Repo.HiveRepo;
 import com.beesynch.app.rest.Security.JwtUtil;
+import com.beesynch.app.rest.Service.HiveService;
 import com.beesynch.app.rest.Service.RankingService;
 import com.beesynch.app.rest.Repo.UserRepo;
 import com.beesynch.app.rest.Service.UserService;
@@ -33,6 +36,12 @@ public class HiveMembersController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private HiveRepo hiveRepo;
+
+    @Autowired
+    private HiveService hiveService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -84,9 +93,12 @@ public class HiveMembersController {
 
 
     @PostMapping("/join")
-    public String newHiveMate(@RequestBody HiveMembersDTO hiveMate) {
-        return "HiveMate added and notification sent!";
+    public ResponseEntity<String> addMemberToHive(@RequestBody AddMembersRequestDTO request) {
+        System.out.println("Received request: " + request);  // Log to check if data is null
+        hiveService.addMemberToHive(request.getAdminUserId(), request.getMemberUsername());
+        return ResponseEntity.ok("User " + request.getMemberUsername() + " has been added to the hive and notification sent!.");
     }
+
 
     @DeleteMapping("/Remove/{userId}")
     public ResponseEntity<?> removeHiveMember(@PathVariable long userId) {

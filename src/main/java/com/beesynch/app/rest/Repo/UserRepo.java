@@ -17,4 +17,7 @@ public interface UserRepo extends JpaRepository<User, Long>{
     @Transactional
     @Query("UPDATE User u SET u.is_admin = TRUE WHERE u.id = :userId")
     void changeToAdmin(@Param("userId")Long userId);
+
+    @Query("SELECT u.is_admin FROM User u WHERE u.id = :userId")
+    Boolean findIsAdminByUserId(@Param("userId") Long userId);
 }

@@ -17,7 +17,12 @@ public class Hive {
     @Column(name = "img_path")
     private String img_path;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id", nullable = false) // New column to store creator ID
+    private User createdBy; // This will store the reference to the creator
+
     // Getters Method
+    public User getCreatedBy() { return createdBy; }
     public Long getHive_id(){
         return hive_id;
     }
@@ -32,6 +37,7 @@ public class Hive {
     }
 
     // Setters Method
+    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
     public void setHive_id(Long id){
         this.hive_id = id;
     }

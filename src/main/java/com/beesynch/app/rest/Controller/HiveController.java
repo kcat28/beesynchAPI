@@ -38,7 +38,6 @@ public class HiveController {
     }
 
 
-
     @DeleteMapping("deleteHive/{hiveId}")//done
     public ResponseEntity<String> deleteHive(@PathVariable Long hiveId) {
         hiveRepo.deleteById(hiveId);
