@@ -68,8 +68,7 @@ public class HiveMembersController {
         String token = authHeader.substring(7);
         Long userId = jwtUtil.extractUserId(token);
 
-        rankingService.updateCompletionRates();
-
+        rankingService.updateLeaderboardWeekly();
         List<Object[]> results = hiveMembersRepo.getCompRateAndPoints(userId);
 
         if (!results.isEmpty()) {
