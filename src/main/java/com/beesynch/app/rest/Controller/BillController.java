@@ -108,7 +108,7 @@ public class BillController {
 
 
     //Update bill
-    @PutMapping("/updateBill/{request}")
+    @PutMapping("/updateBill")
     public ResponseEntity<?> updateBill(@RequestBody BillDTO request){
         try{
             Bill bill = billService.editBill(request);
