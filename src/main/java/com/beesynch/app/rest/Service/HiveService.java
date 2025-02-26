@@ -10,8 +10,10 @@ import com.beesynch.app.rest.Repo.UserRepo;
 import com.beesynch.app.rest.Security.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
 import java.util.Optional;
@@ -105,15 +107,18 @@ public class HiveService {
         }
 
         return hiveRepo.save(existingHive);
-
     }
 
+        public void addMemberToHive(Long adminUserId, String memberUsername, Long memberId) {
+            // Ensure adminUserId is always provided
+            if (adminUserId == null) {
+                throw new IllegalArgumentException("Admin user ID must be provided.");
+            }
 
-        public void addMemberToHive(Long adminUserId, String memberUsername) {
-        // Checks if adminUserId or memberUsername is null or empty.
-        if (adminUserId == null || memberUsername == null || memberUsername.isBlank()) {
-            throw new IllegalArgumentException("Admin user ID and member username must be provided.");
-        }
+            // Ensure at least one of memberUsername or memberId is provided
+            if ((memberUsername == null || memberUsername.isBlank()) && memberId == null) {
+                throw new IllegalArgumentException("Either member username or member ID must be provided.");
+            }
 
         // Step 1: Find user
         User adminUser = userRepo.findById(adminUserId)
@@ -136,6 +141,10 @@ public class HiveService {
 
         // Step: 4 Finds the user to be Added through their username
         User memberUser = userRepo.findByUserName(memberUsername);
+        if(memberUser == null){
+            memberUser = userRepo.findById(memberId).orElse(null); // Retrieve User from Optional
+        }
+
         if (memberUser == null) {
             throw new RuntimeException("User not found.");
         }
@@ -145,8 +154,9 @@ public class HiveService {
         // Step 5: Checks if the found user is already a member of the admin user's hive
         boolean isMember = hiveMembersRepo.existsByUserIdAndHiveId(memberUser.getId(), hive.getHive_id());
         if (isMember) {
-            throw new RuntimeException("User is already a member of this hive.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already a member of this hive.");
         }
+
 
 
         // Step 6: Creates the new member's entry and then saved to the database

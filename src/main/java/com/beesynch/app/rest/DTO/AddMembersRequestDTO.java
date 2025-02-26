@@ -3,6 +3,7 @@ package com.beesynch.app.rest.DTO;
 public class AddMembersRequestDTO {
     private Long adminUserId;
     private String memberUsername;
+    private Long memberId;
 
     // Constructors
     public AddMembersRequestDTO() {}
@@ -13,6 +14,10 @@ public class AddMembersRequestDTO {
     }
     public String getMemberUsername() {
         return memberUsername;
+    }
+
+    public Long getMemberId(){
+        return memberId;
     }
 
     // Setters

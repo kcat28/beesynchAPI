@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Feb 26, 2025 at 12:49 PM
+-- Host: 127.0.0.1
+-- Generation Time: Feb 26, 2025 at 08:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,7 +58,7 @@ CREATE TABLE `hive` (
 INSERT INTO `hive` (`hive_id`, `hive_name`, `hive_created_date`, `img_path`, `created_by_user_id`) VALUES
 (1, 'mojojo', '2025-01-11', '1234WACK.jpg', 9),
 (3, 'Main Hive', '2025-02-19', NULL, 2),
-(19, 'd with admin', '2025-02-24', 'qwerty.jpg', 9);
+(19, 'd with admin', '2025-02-24', 'qwerty.jpg', 2);
 
 -- --------------------------------------------------------
 
@@ -81,9 +81,9 @@ CREATE TABLE `household_members` (
 --
 
 INSERT INTO `household_members` (`user_id`, `hive_id`, `ranking_id`, `role`, `points`, `achievements`, `completion_rate`) VALUES
-(2, 1, 14, 'member', 2, 'null', 0),
-(9, 19, 15, 'ROLE_ADMIN', 2, NULL, 50),
-(1, 3, 16, 'Member', 0, NULL, 0);
+(7, 1, 33, 'Member', 0, NULL, 0),
+(8, 1, 32, 'Member', 0, NULL, 0),
+(9, 19, 15, 'ROLE_ADMIN', 2, NULL, 50);
 
 -- --------------------------------------------------------
 
@@ -121,7 +121,24 @@ CREATE TABLE `ranking` (
 INSERT INTO `ranking` (`ranking_id`, `user_id`, `hive_id`, `rank_position`, `period_start`, `period_end`) VALUES
 (14, 2, 1, 1, '2025-02-26', '2025-03-02'),
 (15, 9, 19, 1, '2025-02-26', '2025-03-02'),
-(16, 1, 3, 0, '2025-02-26', NULL);
+(16, 1, 3, 0, '2025-02-26', NULL),
+(17, 8, 1, 0, '2025-02-26', NULL),
+(18, 7, 1, 0, '2025-02-26', NULL),
+(19, 7, 1, 0, '2025-02-26', NULL),
+(20, 1, 1, 0, '2025-02-26', NULL),
+(21, 8, 1, 0, '2025-02-26', NULL),
+(22, 7, 1, 0, '2025-02-27', NULL),
+(23, 7, 1, 0, '2025-02-27', NULL),
+(24, 8, 1, 0, '2025-02-27', NULL),
+(25, 7, 1, 0, '2025-02-27', NULL),
+(26, 8, 1, 0, '2025-02-27', NULL),
+(27, 7, 1, 0, '2025-02-27', NULL),
+(28, 7, 1, 0, '2025-02-27', NULL),
+(29, 7, 1, 0, '2025-02-27', NULL),
+(30, 7, 1, 0, '2025-02-27', NULL),
+(31, 7, 1, 0, '2025-02-27', NULL),
+(32, 8, 1, 0, '2025-02-27', NULL),
+(33, 7, 1, 0, '2025-02-27', NULL);
 
 --
 -- Triggers `ranking`
@@ -232,10 +249,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `user_name`, `user_email`, `user_password`, `img_path`, `recovery_code`, `is_admin`) VALUES
-(1, 'John Efren', 'Gannaban', 'kcat28', 'jefjef1412@gmail.com', '12345', NULL, '', 0),
-(2, 'Diana Nicole', 'Danga', 'dangsyana', 'dndanga37@gmail.com', '5555', NULL, '', 1),
-(7, 'Jascent Pearl', 'Navarro', 'Jassy', 'jassy@gmail.com', '1234', 'test.jpgasdas', '', 1),
-(8, 'Joyce Anne', 'Colocado', 'joyce', 'joyce@gmail.com', '1234', '', '1c478592-873c-4164-8040-dfe1de7e4b5c', 1),
+(1, 'John Efren', 'Gannaban', 'kcat28', 'jefjef1412@gmail.com', '$2a$10$evPDXfAlHyGRkipgu2roZuXvFeS8BnKhYdki.9/XzF69RJoySyMv6', NULL, '', 0),
+(2, 'Diana Nicole', 'Danga', 'dangsyana', 'dndanga37@gmail.com', '$2a$10$evPDXfAlHyGRkipgu2roZuXvFeS8BnKhYdki.9/XzF69RJoySyMv6', NULL, '', 1),
+(7, 'Jascent Pearl', 'Navarro', 'Jassy', 'jassy@gmail.com', '$2a$10$evPDXfAlHyGRkipgu2roZuXvFeS8BnKhYdki.9/XzF69RJoySyMv6', 'test.jpgasdas', '', 0),
+(8, 'Joyce Anne', 'Colocado', 'joyce', 'joyce@gmail.com', '$2a$10$evPDXfAlHyGRkipgu2roZuXvFeS8BnKhYdki.9/XzF69RJoySyMv6', '', '1c478592-873c-4164-8040-dfe1de7e4b5c', 0),
 (9, 'Keeper', 'Cat', 'Kcat28', 'keeper@gmail.com', '$2a$10$evPDXfAlHyGRkipgu2roZuXvFeS8BnKhYdki.9/XzF69RJoySyMv6', 'sampsop', 'af582595-387b-4db0-b730-42c92cc80ed9', 1);
 
 --
@@ -260,6 +277,7 @@ ALTER TABLE `hive`
 -- Indexes for table `household_members`
 --
 ALTER TABLE `household_members`
+  ADD PRIMARY KEY (`user_id`,`hive_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `hive_id` (`hive_id`),
   ADD KEY `ranking_id` (`ranking_id`);
@@ -335,7 +353,7 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `ranking`
 --
 ALTER TABLE `ranking`
-  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `ranking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `schedule`

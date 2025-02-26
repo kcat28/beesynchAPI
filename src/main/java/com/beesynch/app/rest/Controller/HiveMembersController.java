@@ -93,10 +93,23 @@ public class HiveMembersController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<String> addMemberToHive(@RequestBody AddMembersRequestDTO request) {
-        System.out.println("Received request: " + request);  // Log to check if data is null
-        hiveService.addMemberToHive(request.getAdminUserId(), request.getMemberUsername());
-        return ResponseEntity.ok("User " + request.getMemberUsername() + " has been added to the hive and notification sent!.");
+    public ResponseEntity<String> addMemberToHive(@RequestBody AddMembersRequestDTO request, HttpServletRequest idToken) {
+        System.out.println("Received request: admin: " + request.getAdminUserId() + " member id "+ request.getMemberId() + " memberusername: " + request.getMemberUsername());
+        String authHeader = idToken.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+        String token = authHeader.substring(7);
+        Long adminId = jwtUtil.extractUserId(token);
+        System.out.println("Extracted Admin ID: " + adminId);
+
+        hiveService.addMemberToHive(adminId, request.getMemberUsername(), request.getMemberId());
+        if(request.getMemberUsername() == null){
+            User user = userRepo.findById(request.getMemberId()).orElse(null);
+            return ResponseEntity.ok("User " + user.getUser_name() + " has been added to the hive and notification sent!.");
+        } else {
+            return ResponseEntity.ok("User " + request.getMemberUsername() + " has been added to the hive and notification sent!.");
+        }
     }
 
 

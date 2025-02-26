@@ -109,7 +109,7 @@ public class BillController {
 
     //Update bill
     @PutMapping("/updateBill/{request}")
-    public ResponseEntity<?> updateBill(@PathVariable BillDTO request){
+    public ResponseEntity<?> updateBill(@RequestBody BillDTO request){
         try{
             Bill bill = billService.editBill(request);
             return ResponseEntity.ok("bill updated " + bill.getBill_name());
