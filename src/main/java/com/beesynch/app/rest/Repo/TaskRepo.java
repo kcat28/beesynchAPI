@@ -29,6 +29,11 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
     @Query("UPDATE Task t SET t.task_status = 'Completed' WHERE t.id = :taskId")
     void updateTaskStatus(@Param("taskId") Long taskId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Task t SET t.task_status = 'MISSED' WHERE t.id = :taskId")
+    void markTaskAsMissed(@Param("taskId") Long taskId);
+
     @Query("SELECT t FROM Task t JOIN t.assignments ta WHERE ta.user.id = :user_id AND (t.task_status = 'MISSED' OR t.task_status = 'Missed')")
     List<Task> findMissedTasksByUserId(@Param("user_id") Long userId);
 

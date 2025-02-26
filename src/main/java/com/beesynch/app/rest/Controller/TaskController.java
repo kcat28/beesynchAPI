@@ -220,6 +220,17 @@ public class TaskController {
         }
     }
 
+    // markAsMissed
+    @PutMapping("/markAsMissed/{taskId}")
+    public ResponseEntity<?> markTaskAsMissed(@PathVariable Long taskId) {
+        try {
+            taskRepo.markTaskAsMissed(taskId);
+            return ResponseEntity.ok().body("Task Marked as Missed");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // Delete a task
     @DeleteMapping("delete/{taskId}") // done
     public String deleteTask(@PathVariable Long taskId) {
