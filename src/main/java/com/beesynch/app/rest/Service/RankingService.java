@@ -51,7 +51,7 @@ public class RankingService {
 
     // Method to update leaderboard
     public void updateLeaderBoard() {
-
+        System.out.println("Updating leader board");
         // step 1 & 2: get leaderboard data
         List<Object[]> leaderboardRaw = rankingRepo.getLeaderboard();
 
@@ -92,6 +92,8 @@ public class RankingService {
             //saving total points to hivemembers table
             System.out.println(user.getId());
             hiveMembersRepo.insertPoints(user.getId(), hiveId, totalPoints);
+            System.out.println(totalPoints);
+
 
             // debugging purposes: payload
             System.out.println("Rank: " + (1));
