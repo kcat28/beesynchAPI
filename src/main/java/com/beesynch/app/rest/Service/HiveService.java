@@ -109,7 +109,7 @@ public class HiveService {
     }
 
 
-    public void addMemberToHive(Long adminUserId, String memberUsername) {
+        public void addMemberToHive(Long adminUserId, String memberUsername) {
         // Checks if adminUserId or memberUsername is null or empty.
         if (adminUserId == null || memberUsername == null || memberUsername.isBlank()) {
             throw new IllegalArgumentException("Admin user ID and member username must be provided.");

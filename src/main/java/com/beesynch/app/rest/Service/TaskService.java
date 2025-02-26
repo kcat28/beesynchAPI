@@ -10,6 +10,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -122,53 +124,92 @@ public class TaskService {
     }
 
     public Task editTask(TaskCreationRequestDTO taskCreationRequestEdit) {
-        // step 1 fetch requested task
+        // step 1: Fetch existing task
         Task existingTask = taskRepo.findById(taskCreationRequestEdit.getTask_id())
                 .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskCreationRequestEdit.getTask_id()));
 
-        // step 2 update task fields
+        // step 2: Update task fields
         existingTask.setTitle(taskCreationRequestEdit.getTitle());
         existingTask.setDescription(taskCreationRequestEdit.getDescription());
         existingTask.setCategory(taskCreationRequestEdit.getCategory());
         existingTask.setTask_status(taskCreationRequestEdit.getTask_status());
         existingTask.setRewardpts(taskCreationRequestEdit.getRewardpts());
-        if(taskCreationRequestEdit.getImg_path() != null){
+
+        if (taskCreationRequestEdit.getImg_path() != null) {
             existingTask.setImg_path(taskCreationRequestEdit.getImg_path());
         }
+
         Task updatedTask = taskRepo.save(existingTask);
 
-        // Step 3 update task schedules if available
+        // step 3: Update task schedules if available
         if (taskCreationRequestEdit.getSchedules() != null && !taskCreationRequestEdit.getSchedules().isEmpty()) {
-            scheduleRepo.deleteByTaskId(updatedTask.getId()); // remove old schedules
+            List<Schedule> existingSchedules = scheduleRepo.findByTaskId(updatedTask.getId());
+            List<Schedule> updatedSchedules = new ArrayList<>();
+
             for (ScheduleDTO scheduleDTO : taskCreationRequestEdit.getSchedules()) {
-                Schedule schedule = new Schedule();
+                // find existing schedule by start date
+                Schedule schedule = existingSchedules.stream()
+                        .filter(s -> s.getStart_date().equals(scheduleDTO.getStartDate()))
+                        .findFirst()
+                        .orElse(new Schedule()); // Create if not found
+
                 schedule.setTask(updatedTask);
                 schedule.setStart_date(scheduleDTO.getStartDate());
                 schedule.setEnd_date(scheduleDTO.getEndDate());
                 schedule.setRecurrence(scheduleDTO.getRecurrence());
                 schedule.setDue_time(scheduleDTO.getDueTime());
 
-                User user = scheduleDTO.getUser_id() != null ?
-                        userRepo.findById(scheduleDTO.getUser_id()).orElse(null) : null;
+                User user = (scheduleDTO.getUser_id() != null) ? userRepo.findById(scheduleDTO.getUser_id()).orElse(null) : null;
                 schedule.setUser_id(user);
 
-                scheduleRepo.save(schedule);
+                updatedSchedules.add(schedule);
             }
+
+            // save all updated schedules
+            scheduleRepo.saveAll(updatedSchedules);
+
+            // remove schedules that are no longer in the request
+            List<Schedule> schedulesToRemove = existingSchedules.stream()
+                    .filter(s -> updatedSchedules.stream().noneMatch(us ->
+                            us.getStart_date().equals(s.getStart_date())))
+                    .toList();
+            scheduleRepo.deleteAll(schedulesToRemove);
         }
 
-        // step 4 update task assignments if provided
-        if (taskCreationRequestEdit.getAssignments() != null && !taskCreationRequestEdit.getAssignments().isEmpty()) {
-            taskAssignmentRepo.deleteByTaskId(updatedTask.getId()); // remove old assignments
-            for (TaskAssignmentDTO assignmentDTO : taskCreationRequestEdit.getAssignments()) {
-                User user = assignmentDTO.getId() != null ?
-                        userRepo.findById(assignmentDTO.getId()).orElse(null) : null;
 
-                TaskAssignment assignment = new TaskAssignment();
+        // step 4: update task assignments if provided
+        if (taskCreationRequestEdit.getAssignments() != null && !taskCreationRequestEdit.getAssignments().isEmpty()) {
+            List<TaskAssignment> existingAssignments = taskAssignmentRepo.findByTaskId(updatedTask.getId());
+            List<TaskAssignment> updatedAssignments = new ArrayList<>();
+
+            for (TaskAssignmentDTO assignmentDTO : taskCreationRequestEdit.getAssignments()) {
+                // check if assignment exists else create new
+                TaskAssignment assignment = existingAssignments.stream()
+                        .filter(a -> a.getUser().getId() == (assignmentDTO.getId()))
+                        .findFirst()
+                        .orElse(new TaskAssignment());
+
+                User user = userRepo.findById(assignmentDTO.getId()).orElse(null);
                 assignment.setTask(updatedTask);
                 assignment.setUser(user);
                 assignment.setAssignedDate(assignmentDTO.getAssignedDate());
-                taskAssignmentRepo.save(assignment);
+
+                updatedAssignments.add(assignment);
             }
+
+            // save all updated assignments
+            taskAssignmentRepo.saveAll(updatedAssignments);
+
+            // remove assignments that are no longer in the request
+            List<Long> updatedAssignmentUserIds = updatedAssignments.stream()
+                    .map(a -> a.getUser().getId())
+                    .toList();
+
+            List<TaskAssignment> assignmentsToRemove = existingAssignments.stream()
+                    .filter(a -> !updatedAssignmentUserIds.contains(a.getUser().getId()))
+                    .toList();
+
+            taskAssignmentRepo.deleteAll(assignmentsToRemove);
         }
 
         return updatedTask;

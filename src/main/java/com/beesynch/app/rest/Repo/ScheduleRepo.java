@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
@@ -18,4 +19,8 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Long> {
     @Modifying
     @Query("DELETE FROM Schedule s WHERE s.bill_id.bill_id = :billid")
     void deleteByTaskIdbill(@Param("billid") Long billid);
+
+
+    @Query("SELECT s FROM Schedule s WHERE s.task.id =:taskid")
+    List<Schedule> findByTaskId(@Param("taskid")Long taskid);
 }
