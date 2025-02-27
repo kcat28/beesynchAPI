@@ -152,7 +152,7 @@ public class AuthController {
     }
 
     public record SignupRequest(String user_name, String user_password, String user_email, String first_name,
-            String last_name, String recovery_code, boolean is_admin) {
+            String last_name, String recovery_code, boolean is_admin, String security_answers) {
     }
 
     @PostMapping("/signup")
@@ -173,6 +173,7 @@ public class AuthController {
             user.setLast_name(signupRequest.last_name());
             user.setRecovery_code(signupRequest.recovery_code());
             user.setIsAdmin(signupRequest.is_admin());
+            user.setSecurity_answers(signupRequest.security_answers());
 
             // Save the user
             userService.saveUser(user);
@@ -226,6 +227,131 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token validation failed");
+        }
+    }
+
+    // Record for getting security questions by username
+    public record GetSecurityQuestionsRequest(String userName) {
+    }
+
+    @PostMapping("/get-security-questions")
+    public ResponseEntity<?> getSecurityQuestions(@RequestBody GetSecurityQuestionsRequest request) {
+        try {
+            User user = userRepo.findByUserName(request.userName());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User not found.");
+            }
+
+            // Parse the stored security answers JSON
+            String securityAnswersJson = user.getSecurity_answers();
+            if (securityAnswersJson == null || securityAnswersJson.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("No security questions found for this user.");
+            }
+
+            // Extract just the questions (not the answers)
+            // This assumes the security_answers field contains a JSON with question1,
+            // question2, question3
+            // We'll use a simple approach to extract just the questions
+            Map<String, Object> securityData = new java.util.HashMap<>();
+            try {
+                // Parse the JSON string into a Map
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                Map<String, Object> fullData = mapper.readValue(securityAnswersJson, Map.class);
+
+                // Extract only the questions
+                securityData.put("question1", fullData.get("question1"));
+                securityData.put("question2", fullData.get("question2"));
+                securityData.put("question3", fullData.get("question3"));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Error parsing security questions.");
+            }
+
+            return ResponseEntity.ok(securityData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong while retrieving security questions.");
+        }
+    }
+
+    // Record for verifying security answers
+    public record VerifySecurityAnswersRequest(String userName, String answer1, String answer2, String answer3) {
+    }
+
+    @PostMapping("/verify-security-answers")
+    public ResponseEntity<?> verifySecurityAnswers(@RequestBody VerifySecurityAnswersRequest request) {
+        try {
+            User user = userRepo.findByUserName(request.userName());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User not found.");
+            }
+
+            String securityAnswersJson = user.getSecurity_answers();
+            if (securityAnswersJson == null || securityAnswersJson.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("No security answers found for this user.");
+            }
+
+            // Parse the stored security answers
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            Map<String, String> storedAnswers = mapper.readValue(securityAnswersJson, Map.class);
+
+            // Compare the provided answers with stored answers (case-insensitive)
+            boolean isAnswer1Correct = request.answer1().trim().equalsIgnoreCase(storedAnswers.get("answer1").trim());
+            boolean isAnswer2Correct = request.answer2().trim().equalsIgnoreCase(storedAnswers.get("answer2").trim());
+            boolean isAnswer3Correct = request.answer3().trim().equalsIgnoreCase(storedAnswers.get("answer3").trim());
+
+            if (isAnswer1Correct && isAnswer2Correct && isAnswer3Correct) {
+                // Generate a temporary token for password reset
+                String resetToken = jwtUtil.generatePasswordResetToken(user.getId());
+                return ResponseEntity.ok(Map.of("token", resetToken));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Security answers do not match our records.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong while verifying security answers.");
+        }
+    }
+
+    // Record for resetting password with token
+    public record ResetPasswordRequest(String resetToken, String newPassword) {
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPasswordWithToken(@RequestBody ResetPasswordRequest request) {
+        try {
+            // Validate the reset token
+            Long userId = jwtUtil.extractUserIdFromResetToken(request.resetToken());
+            if (userId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Invalid or expired reset token.");
+            }
+
+            // Find the user
+            User user = userRepo.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Validate the new password
+            if (!request.newPassword().matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Password must:\n• Be at least 8 characters long.\n• Contain at least one uppercase and one lowercase letter.\n• Have at least one numeric digit.");
+            }
+
+            // Update the password
+            user.setUser_password(passwordEncoder.encode(request.newPassword()));
+            userRepo.save(user);
+
+            return ResponseEntity.ok("Password has been reset successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong while resetting the password.");
         }
     }
 

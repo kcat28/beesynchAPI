@@ -4,7 +4,6 @@ package com.beesynch.app.rest.DTO;
 
 import jakarta.persistence.Transient;
 
-
 public class UserDTO {
     private String user_name;
     private String user_password;
@@ -17,10 +16,13 @@ public class UserDTO {
 
     private String recovery_code;
 
+    private String security_answers;
+
     // Getters and Setters
     public String getUser_name() {
         return user_name;
     }
+
     public void setUser_name(String user_name) {
         this.user_name = user_name;
     }
@@ -28,11 +30,14 @@ public class UserDTO {
     public String getUser_password() {
         return user_password;
     }
+
     public void setUser_password(String user_password) {
         this.user_password = user_password;
     }
 
-    public String getCurrentPassword() {return currentPassword;}
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
 
     public void setCurrentPassword(String currentPassword) {
         this.currentPassword = currentPassword;
@@ -41,6 +46,7 @@ public class UserDTO {
     public String getNewPassword() {
         return newPassword;
     }
+
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
     }
@@ -52,5 +58,12 @@ public class UserDTO {
     public void setRecovery_code(String recovery_code) {
         this.recovery_code = recovery_code;
     }
-}
 
+    public String getSecurity_answers() {
+        return security_answers;
+    }
+
+    public void setSecurity_answers(String security_answers) {
+        this.security_answers = security_answers;
+    }
+}
