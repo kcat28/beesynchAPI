@@ -79,6 +79,7 @@ public class TaskController {
                         task.getTask_status(),
                         task.getRewardpts(),
                         task.getImg_path(),
+                        task.getImgProof(),
                         task.getSchedule().stream()
                                 .map(schedule -> new ScheduleDTO(
                                         schedule.getTask().getId(),
@@ -102,6 +103,7 @@ public class TaskController {
                         task.getTask_status(),
                         task.getRewardpts(),
                         task.getImg_path(),
+                        task.getImgProof(),
                         task.getSchedule().stream()
                                 .map(schedule -> new ScheduleDTO(
                                         schedule.getTask().getId(),
@@ -144,6 +146,7 @@ public class TaskController {
                         task.getTask_status(),
                         task.getRewardpts(),
                         task.getImg_path(),
+                        task.getImgProof(),
                         task.getSchedule().stream()
                                 .map(schedule -> new ScheduleDTO(
                                         schedule.getTask().getId(),
@@ -213,8 +216,29 @@ public class TaskController {
     @PutMapping("/markAsComplete/{taskId}")
     public ResponseEntity<?> markTaskAsComplete(@PathVariable Long taskId) {
         try {
-            taskRepo.updateTaskStatus(taskId);
+            taskRepo.markTaskAsCompleted(taskId);
             return ResponseEntity.ok().body("Task Marked as Complete");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Update task proof image
+    @PutMapping("/updateImgProof/{taskId}")
+    public ResponseEntity<?> updateTaskProofImage(@PathVariable Long taskId, @RequestBody Map<String, String> payload) {
+        try {
+            String imgProof = payload.get("imgProof");
+            if (imgProof == null || imgProof.isEmpty()) {
+                return ResponseEntity.badRequest().body("Error: imgProof must not be null or empty.");
+            }
+
+            Task task = taskRepo.findById(taskId)
+                    .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
+            task.setImgProof(imgProof);
+            taskRepo.save(task);
+
+            return ResponseEntity.ok().body("Task proof image updated successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

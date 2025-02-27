@@ -26,8 +26,8 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Task t SET t.task_status = 'Completed' WHERE t.id = :taskId")
-    void updateTaskStatus(@Param("taskId") Long taskId);
+    @Query(value = "UPDATE Task t SET t.task_status = 'Completed', t.completion_date = UTC_TIMESTAMP() WHERE t.id = :taskId", nativeQuery = true)
+    void markTaskAsCompleted(@Param("taskId") Long taskId);
 
     @Modifying
     @Transactional

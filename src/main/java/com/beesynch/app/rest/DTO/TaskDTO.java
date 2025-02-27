@@ -11,9 +11,10 @@ public class TaskDTO {
     private String task_status;
     private Integer rewardpts;
     private String img_path;
+    private String imgProof;
     private List<ScheduleDTO> schedules;  // List of schedules
 
-    public TaskDTO(Long task_id, String title, String description, String category, String task_status, Integer rewardpts, String img_path, List<ScheduleDTO> schedules) {
+    public TaskDTO(Long task_id, String title, String description, String category, String task_status, Integer rewardpts, String img_path, String imgProof, List<ScheduleDTO> schedules) {
         this.task_id = task_id;
         this.title = title;
         this.description = description;
@@ -21,6 +22,7 @@ public class TaskDTO {
         this.task_status = task_status;
         this.rewardpts = rewardpts;
         this.img_path = img_path;
+        this.imgProof = imgProof;
         this.schedules = schedules;
     }
 
@@ -85,4 +87,11 @@ public class TaskDTO {
         return schedules;
     }
 
+    public String getImgProof() {
+        return imgProof;
+    }
+
+    public void setImgProof(String imgProof) {
+        this.imgProof = imgProof;
+    }
 }
