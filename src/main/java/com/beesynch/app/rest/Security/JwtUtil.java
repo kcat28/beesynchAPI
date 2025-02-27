@@ -68,4 +68,40 @@ public class JwtUtil {
         }
     }
 
+    // Generate a password reset token (with shorter expiration)
+    public String generatePasswordResetToken(Long userId) {
+        Date now = new Date();
+        // Set expiration to 15 minutes for security
+        Date expiryDate = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
+
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .claim("type", "password_reset") // Add a claim to identify this as a password reset token
+                .compact();
+    }
+
+    // Extract user ID from reset token
+    public Long extractUserIdFromResetToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // Verify this is a password reset token
+            String tokenType = claims.get("type", String.class);
+            if (!"password_reset".equals(tokenType)) {
+                return null;
+            }
+
+            return Long.parseLong(claims.getSubject());
+        } catch (Exception e) {
+            return null; // Token is invalid or expired
+        }
+    }
+
 }
