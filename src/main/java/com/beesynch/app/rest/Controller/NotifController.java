@@ -2,6 +2,8 @@
 
     import com.beesynch.app.rest.Models.Notification;
     import com.beesynch.app.rest.Repo.NotificationRepo;
+    import com.beesynch.app.rest.Security.JwtUtil;
+    import jakarta.servlet.http.HttpServletRequest;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
@@ -17,6 +19,9 @@
         @Autowired
         private NotificationRepo notificationRepo;
 
+        @Autowired
+        private JwtUtil jwtUtil;
+
         //get notif by notif id // CHECKED JAN 30 2025 - JEP
         @GetMapping("/getbyId/{notifId}")
         public ResponseEntity<Notification> getNotificationById(@PathVariable("notifId") Long notifId) {
@@ -30,9 +35,12 @@
 
 
         // get notif by user id // CHECKED JAN 30 2025 - JEP
-        @GetMapping("/getbyUser/{user_id}")
-        public List<Notification> getNotificationsByUserId(@PathVariable("user_id") Long user_id){
-            List<Notification> notifications = notificationRepo.findByUser_id(user_id);
+        @GetMapping("/getbyUser")
+        public List<Notification> getNotificationsByUserId(HttpServletRequest request){
+            String token = request.getHeader("Authorization").substring(7); // remove "Bearer"
+            String userId = String.valueOf(jwtUtil.extractUserId(token)); // extract user id from jwt
+            System.out.println(userId);
+            List<Notification> notifications = notificationRepo.findByUser_id(Long.valueOf(userId));
             System.out.println("Fetched Notifications: " + notifications);
             return notifications;
         }
