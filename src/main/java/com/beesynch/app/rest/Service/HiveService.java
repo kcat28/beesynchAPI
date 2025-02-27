@@ -46,6 +46,9 @@ public class HiveService {
         // extract token from auth header
         String token = request.getHeader("Authorization").substring(7); // remove "Bearer"
         String userId = String.valueOf(jwtUtil.extractUserId(token)); // extract user id from jwt
+        Optional<User> optionalUser = userRepo.findById(Long.valueOf(userId));
+        User user = optionalUser.get();
+
 
         //step 1 create hive
         Hive hive = new Hive();
@@ -53,17 +56,15 @@ public class HiveService {
         hive.setHiveName(hiveDTO.getHiveName());
         hive.setHive_created_date(Date.valueOf(java.time.LocalDate.now()));
         hive.setImg_path(hiveDTO.getImg_path());
-//        hive.setCreatedBy(user);
+        hive.setCreatedBy(user);
         hiveRepo.save(hive);
 
-        //step 2 set user admin
-        Optional<User> optionalUser = userRepo.findById(Long.valueOf(userId));
 
+        //step 2 set user admin
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found");
         }
         //optional to obj
-        User user = optionalUser.get();
         if (user.getIsAdmin()){
             System.out.println("Warning: User is already Admin");
         }
