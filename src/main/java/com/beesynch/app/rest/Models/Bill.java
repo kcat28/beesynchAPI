@@ -40,6 +40,9 @@ public class Bill {
     @JsonManagedReference
     private List<Schedule> schedule = new ArrayList<>();
 
+    @Column(name = "img_proof", length = 300)
+    private String imgProof;
+
     // Getters Method
     public Hive getHive_id(){
         return hive_id;
@@ -47,7 +50,6 @@ public class Bill {
     public List<Schedule> getSchedule(){
         return schedule;
     } //01/19/2025
-
     public Long getBill_id(){
         return bill_id;
     }
@@ -61,9 +63,11 @@ public class Bill {
     public String getBill_status(){
         return bill_status;
     }
-
     public String getImg_path(){
         return img_path;
+    }
+    public String getImgProof() {
+        return imgProof;
     }
 
 
@@ -89,6 +93,9 @@ public class Bill {
     public void setSchedules(List<Schedule> schedules){
         this.schedule = schedules;
     } //01/19/2025
+    public void setImgProof(String imgProof) {
+        this.imgProof = imgProof;
+    }
 
 
 }

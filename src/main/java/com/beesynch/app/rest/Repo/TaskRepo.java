@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Date;
 import java.util.List;
 
 public interface TaskRepo extends JpaRepository<Task, Long> {
@@ -26,8 +27,8 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Task t SET t.task_status = 'Completed' WHERE t.id = :taskId")
-    void updateTaskStatus(@Param("taskId") Long taskId);
+    @Query(value = "UPDATE task SET task_status = 'Completed', completion_date = UTC_TIMESTAMP WHERE task_id = :taskId", nativeQuery = true)
+    void markTaskAsCompleted(@Param("taskId") Long taskId);
 
     @Modifying
     @Transactional

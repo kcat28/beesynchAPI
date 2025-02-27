@@ -45,6 +45,9 @@ public class Task {
     @JsonManagedReference
     private List<Schedule> schedule = new ArrayList<>();
 
+    @Column(name = "img_proof")
+    private String imgProof;
+
     // Getters Method
     public Long getId() {
         return id;
@@ -76,7 +79,9 @@ public class Task {
     public List<Schedule> getSchedule(){
         return schedule;
     }
-
+    public String getImgProof() {
+        return imgProof;
+    }
 
     // Setters Method
     public void setId(Long id) {
@@ -100,7 +105,9 @@ public class Task {
     public void setImg_path(String img_path) {
         this.img_path = img_path;
     }
-
+    public void setImgProof(String imgProof) {
+        this.imgProof = imgProof;
+    }
 
 
 }

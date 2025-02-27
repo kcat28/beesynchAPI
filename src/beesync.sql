@@ -34,7 +34,8 @@ CREATE TABLE `bills` (
   `amount` double NOT NULL,
   `description` varchar(200) DEFAULT NULL,
   `bill_status` varchar(100) NOT NULL,
-  `img_path` varchar(300) DEFAULT NULL
+  `img_path` varchar(300) DEFAULT NULL,
+  `img_proof` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -192,7 +193,8 @@ CREATE TABLE `task` (
   `task_status` varchar(100) NOT NULL,
   `rewardpts` int(11) DEFAULT NULL,
   `completion_date` date DEFAULT NULL,
-  `img_path` varchar(255) DEFAULT NULL
+  `img_path` varchar(255) DEFAULT NULL,
+  `img_proof` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

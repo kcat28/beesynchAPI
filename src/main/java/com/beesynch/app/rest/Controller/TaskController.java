@@ -4,6 +4,7 @@ import com.beesynch.app.rest.DTO.ScheduleDTO;
 import com.beesynch.app.rest.DTO.TaskAssignmentDTO;
 import com.beesynch.app.rest.DTO.TaskCreationRequestDTO;
 import com.beesynch.app.rest.DTO.TaskDTO;
+import com.beesynch.app.rest.Models.Schedule;
 import com.beesynch.app.rest.Service.TaskService;
 import com.beesynch.app.rest.Models.Task;
 import com.beesynch.app.rest.Repo.TaskRepo;
@@ -79,6 +80,7 @@ public class TaskController {
                         task.getTask_status(),
                         task.getRewardpts(),
                         task.getImg_path(),
+                        task.getImgProof(),
                         task.getSchedule().stream()
                                 .map(schedule -> new ScheduleDTO(
                                         schedule.getTask().getId(),
@@ -102,6 +104,7 @@ public class TaskController {
                         task.getTask_status(),
                         task.getRewardpts(),
                         task.getImg_path(),
+                        task.getImgProof(),
                         task.getSchedule().stream()
                                 .map(schedule -> new ScheduleDTO(
                                         schedule.getTask().getId(),
@@ -144,6 +147,7 @@ public class TaskController {
                         task.getTask_status(),
                         task.getRewardpts(),
                         task.getImg_path(),
+                        task.getImgProof(),
                         task.getSchedule().stream()
                                 .map(schedule -> new ScheduleDTO(
                                         schedule.getTask().getId(),
@@ -167,6 +171,7 @@ public class TaskController {
                     taskMap.put("task_status", Task.getTask_status());
                     taskMap.put("rewardpts", Task.getRewardpts());
                     taskMap.put("img_path", Task.getImg_path());
+                    taskMap.put("imgProof", Task.getImgProof());
                     taskMap.put("due_time", Task.getSchedule().stream()
                             .map(schedule -> schedule.getDue_time())
                             .findFirst()
@@ -189,8 +194,9 @@ public class TaskController {
                     taskMap.put("task_status", Task.getTask_status());
                     taskMap.put("rewardpts", Task.getRewardpts());
                     taskMap.put("img_path", Task.getImg_path());
+                    taskMap.put("imgProof", Task.getImgProof());
                     taskMap.put("due_time", Task.getSchedule().stream()
-                            .map(schedule -> schedule.getDue_time())
+                            .map(Schedule::getDue_time)
                             .findFirst()
                             .orElse(null));
                     return taskMap;
@@ -213,8 +219,29 @@ public class TaskController {
     @PutMapping("/markAsComplete/{taskId}")
     public ResponseEntity<?> markTaskAsComplete(@PathVariable Long taskId) {
         try {
-            taskRepo.updateTaskStatus(taskId);
+            taskRepo.markTaskAsCompleted(taskId);
             return ResponseEntity.ok().body("Task Marked as Complete");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Update task proof image
+    @PutMapping("/updateImgProof/{taskId}")
+    public ResponseEntity<?> updateTaskProofImage(@PathVariable Long taskId, @RequestBody Map<String, String> payload) {
+        try {
+            String imgProof = payload.get("imgProof");
+            if (imgProof == null || imgProof.isEmpty()) {
+                return ResponseEntity.badRequest().body("Error: imgProof must not be null or empty.");
+            }
+
+            Task task = taskRepo.findById(taskId)
+                    .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+
+            task.setImgProof(imgProof);
+            taskRepo.save(task);
+
+            return ResponseEntity.ok().body("Task proof image updated successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

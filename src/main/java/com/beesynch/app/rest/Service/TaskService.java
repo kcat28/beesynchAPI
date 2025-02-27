@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 @Transactional
 public class TaskService {
@@ -52,7 +51,7 @@ public class TaskService {
             // Step 2: Create and save the Schedule. notifications are tied
             if (taskCreationRequest.getSchedules() != null && !taskCreationRequest.getSchedules().isEmpty()) {
 
-                for(ScheduleDTO scheduleDTO : taskCreationRequest.getSchedules()){
+                for (ScheduleDTO scheduleDTO : taskCreationRequest.getSchedules()) {
                     Schedule schedule = new Schedule();
                     schedule.setTask(savedTask);
 
@@ -68,22 +67,22 @@ public class TaskService {
                     User user = null;
 
                     // Check if user_id is not null
-                    if(scheduleDTO.getUser_id() != null){
+                    if (scheduleDTO.getUser_id() != null) {
                         user = userRepo.findById(scheduleDTO.getUser_id())
-                                .orElseThrow(() -> new RuntimeException("User not found with ID: " + scheduleDTO.getUser_id()));
+                                .orElseThrow(() -> new RuntimeException(
+                                        "User not found with ID: " + scheduleDTO.getUser_id()));
                     }
                     // Allow user to remain null if user_id is null
                     schedule.setUser_id(user);
                     scheduleRepo.save(schedule);
 
                     // Create notification for this schedule
-                        Notification notification = new Notification();
-                        notification.setSchedule_id(schedule);
-                        notification.setUser_id(user);
-                        notification.setMessage("New task Created: " + savedTask.getTitle());
-                        notification.setNotif_created_date(new java.sql.Date(System.currentTimeMillis()));
-                        notificationRepo.save(notification);
-
+                    Notification notification = new Notification();
+                    notification.setSchedule_id(schedule);
+                    notification.setUser_id(user);
+                    notification.setMessage("New task Created: " + savedTask.getTitle());
+                    notification.setNotif_created_date(new java.sql.Date(System.currentTimeMillis()));
+                    notificationRepo.save(notification);
 
                 }
             }
@@ -93,18 +92,21 @@ public class TaskService {
 
                 for (TaskAssignmentDTO assignmentDTO : taskCreationRequest.getAssignments()) {
                     if (assignmentDTO.getId() == null) {
-                        System.out.println("Warning: user_id is null for TaskAssignmentDTO, but allowing null as requested.");
+                        System.out.println(
+                                "Warning: user_id is null for TaskAssignmentDTO, but allowing null as requested.");
                     }
                     if (assignmentDTO.getAssignedDate() == null) {
-                        throw new IllegalArgumentException("Error: assignedDate in TaskAssignmentDTO must not be null.");
+                        throw new IllegalArgumentException(
+                                "Error: assignedDate in TaskAssignmentDTO must not be null.");
                     }
                     // Fetch User entity (either null or value)
                     User user = null;
                     if (assignmentDTO.getId() != null) {
                         user = userRepo.findById(assignmentDTO.getId())
-                                .orElseThrow(() -> new RuntimeException("User not found with ID: " + assignmentDTO.getId()));
+                                .orElseThrow(
+                                        () -> new RuntimeException("User not found with ID: " + assignmentDTO.getId()));
                     }
-                    //Create taskAssignment
+                    // Create taskAssignment
                     TaskAssignment assignment = new TaskAssignment();
                     assignment.setTask(savedTask);
                     assignment.setUser(user); // User should already be fetched from userRepo
@@ -126,7 +128,8 @@ public class TaskService {
     public Task editTask(TaskCreationRequestDTO taskCreationRequestEdit) {
         // step 1: Fetch existing task
         Task existingTask = taskRepo.findById(taskCreationRequestEdit.getTask_id())
-                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskCreationRequestEdit.getTask_id()));
+                .orElseThrow(
+                        () -> new RuntimeException("Task not found with ID: " + taskCreationRequestEdit.getTask_id()));
 
         // step 2: Update task fields
         existingTask.setTitle(taskCreationRequestEdit.getTitle());
@@ -137,6 +140,11 @@ public class TaskService {
 
         if (taskCreationRequestEdit.getImg_path() != null) {
             existingTask.setImg_path(taskCreationRequestEdit.getImg_path());
+        }
+
+        // Handle the imgProof field
+        if (taskCreationRequestEdit.getImgProof() != null) {
+            existingTask.setImgProof(taskCreationRequestEdit.getImgProof());
         }
 
         Task updatedTask = taskRepo.save(existingTask);
@@ -159,7 +167,9 @@ public class TaskService {
                 schedule.setRecurrence(scheduleDTO.getRecurrence());
                 schedule.setDue_time(scheduleDTO.getDueTime());
 
-                User user = (scheduleDTO.getUser_id() != null) ? userRepo.findById(scheduleDTO.getUser_id()).orElse(null) : null;
+                User user = (scheduleDTO.getUser_id() != null)
+                        ? userRepo.findById(scheduleDTO.getUser_id()).orElse(null)
+                        : null;
                 schedule.setUser_id(user);
 
                 updatedSchedules.add(schedule);
@@ -170,12 +180,11 @@ public class TaskService {
 
             // remove schedules that are no longer in the request
             List<Schedule> schedulesToRemove = existingSchedules.stream()
-                    .filter(s -> updatedSchedules.stream().noneMatch(us ->
-                            us.getStart_date().equals(s.getStart_date())))
+                    .filter(s -> updatedSchedules.stream()
+                            .noneMatch(us -> us.getStart_date().equals(s.getStart_date())))
                     .toList();
             scheduleRepo.deleteAll(schedulesToRemove);
         }
-
 
         // step 4: update task assignments if provided
         if (taskCreationRequestEdit.getAssignments() != null && !taskCreationRequestEdit.getAssignments().isEmpty()) {
@@ -216,9 +225,7 @@ public class TaskService {
     }
 
     @Scheduled(cron = "0 0 16 * * MON", zone = "Asia/Manila")
-    public Integer flushCompletedTasks(){
+    public Integer flushCompletedTasks() {
         return taskRepo.flushTaskByStatus("Completed");
     }
 }
-
-
